@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <% include ./_header %>
+
+  <% include ./_adhoc_styling %>
+
+  <body data-spy="scroll" data-target=".scroll-bootstrap" data-offset="50">
+    <!-- NAVBAR-->
+    <% include ./_nav %>
+
+    <!--===============================================================-->
+
+    <!-- INTRO-->
+
+    <div style="padding:20px;padding-top:100px;">
+
+        <p class="p1"><strong>Project Goal:</strong></p>
+        <p class="p1">Rather than taking two sequences and determining the similarity between them, the spirit of this project is to take a lot of sequences and return the two closest. This is an optimization algorithm with two basic components 1) a method of comparing two strings and 2) a method of efficiently leveraging features of biological string comparison to ensure that every pair of potentially-optimal strings is compared to return the best pairing.&nbsp;</p>
+        <p class="p1"><strong>Data:</strong></p>
+        <p class="p1">Since the algorithm implemented in this project had a run time of <span style="font-style:italic">O(mn)</span> with a mXn matrix <span style="font-style:italic">(n=str1, m=str2)</span>, it was important to consider strings of a reasonable length. Even though the algorithm is polynomial, some sequences would be prohibitively cumbersome for comparison. So various proteins and genomic sequences from (ncbi.nlm.nih.gov) were evaluated to determine the feasibility of comparison. We evaluated similarity in length across different species as well as the availability of numerous strings to allow comparison of many different animals. Ultimately, we settled on myosin-9. It was attractive both because it typically consists of 2,000 characters or less and it was a readily available sequence for many species in FASTA format. Furthermore, we chose Myosin-9 because it functions as a key cellular protein and has been widely researched due to it's prevalence in human and other species cellular interactions. Myosin-9 is encoded by the MYH9 gene in humans, and mutation of this gene gives rise to a variety of neuro-muscular disorders. This protein is seen at specific cellular junctions and enables motility between these junctions. We are interested to learn whether a similarity exists between vertebrae and non-vertebrae organisms Myocin-9 proteins. Moreover, our goal is to find vertebrae organisms with similar Myocin-9 to determine whether similarity correlates to mirrored cellular responses from external stimulus.</p>
+        <p class="p1">The list of organisms&rsquo; Myosin-9 strings that were compared for this project were:</p>
+        <ul class="ul1">
+        <li class="li1"><span class="s1">&bull; </span>Human (homo sapien)</li>
+        <li class="li1"><span class="s1">&bull; </span>House mouse (mus musculus)</li>
+        <li class="li1"><span class="s1">&bull; </span>Cotton tree (Gossypium arboretum)</li>
+        <li class="li1"><span class="s1">&bull; </span>Gorilla (gorilla gorilla gorilla)</li>
+        <li class="li1"><span class="s1">&bull; </span>Bleeding heart monkey (Theropithecus gelada)</li>
+        <li class="li1"><span class="s1">&bull; </span>Southern pig-tailed macaque (Macaca nemestrina)</li>
+        <li class="li1"><span class="s1">&bull; </span>Ugandan red colobus (Piliocolobus tephrosceles)</li>
+        <li class="li1"><span class="s1">&bull; </span>Domestic dog (Canis lupus familiaris)</li>
+        <li class="li1"><span class="s1">&bull; </span>Chilean tinamou (Nothoprocta perdicaria)</li>
+        <li class="li1"><span class="s1">&bull; </span>Rat (Rattus norvegicus)</li>
+        </ul>
+        <p class="p2">This list was intentionally heavy on primates and mammals but a few unusual organisms were added to see if there were any surprising similarities between a cotton wood tree and a human (there were not).</p>
+        <p class="p1"><strong>Algorithm:</strong></p>
+        <p class="p1">As documented in the sequence alignment algorithm, it is a dynamic programming algorithm that can be implement in O(nm) with respect to both time and space. It leverages a gap penalty and mismatch penalty to determine whether or not to insert a gap in the first string, second string, or accept a match/mismatch at each position. The previous determination can be used to determine the next position's optimal solution and the results are memorized using an nXm array that can later be parsed to return a solution. This was the fundamental basis for this project, however the sequence alignment algorithm works strictly on two strings and our goal was to compare many and return the best two. The obvious extension therefore was to implement essentially the following:</p>
+        <pre style="float:left; padding-right:40px; padding-bottom: 0px;margin-right:20px">
+        <code>
+          <span>for i in range strings.size</span>
+          <span>  for j in  i…range strings.size</span>
+          <span>    result = sequence_align(strings[i], strings[j])</span>
+          <span>      if(result.cost <= best_pair.cost)</span>
+          <span>        best_pair = result</span>
+          <span>return best_pair</span>
+        </code>
+      </pre>
+
+        <p class="p1">This is a polynomial time extension of the sequence alignment algorithm that alters it to return the best pair among a set of sequences. This algorithm evaluates every pair of sequences and returns the best two.&nbsp;</p>
+        <p class="p3">However, not all sequences need to be compared to derive the globally optimal solution. For example, say that the current best cost is 50 and in the next iteration you are comparing a string of length 200 to a string of length 50 with a gap penalty of 1. There is no need to evaluate this pair because the very best that could happen is every letter matches but there are 150 gaps inserted in the shorter string resulting in a cost of 150. More formally, no two sequences need to be compared that meet the following criteria:</p>
+        <code style="color:black">abs(string1.length string2.length) * gap_penalty > best_pair.cost</code>
+        <p class="p1">The proof follows naturally, if there are strings of dissimilar size then the minimum number of gaps necessary to achieve an alignment is the difference between the length of the two strings. If that difference multiplied by the gap penalty is greater than the current best pair&rsquo;s cost, then the gap penalty alone will overwhelm the current best cost and it is not possible for that pair to be optimal.</p>
+        <p class="p1">Analytically, this does not alter the asymptotic run time of the algorithm, however, strings across multiple species frequently differ in length. Taking advantage of this difference in string length allowed fewer comparisons and improved run time for this project.</p>
+        <p class="p1"><strong>Results:</strong></p>
+        <p class="p1">The results were indeed surprising for this project. We were anticipating primate-like animals to all have similar Myosin-9 strings because they are evolutionarily close together. This was true in some instances. In fact, Southern pig-tailed macaque (Macaca nemestrina) and the bleeding-heart monkey (Theropithecus gelada) had THE SAME myosin-9 string. All 1960 characters from each string were exactly the same. On the contrary, we assumed that humans and gorillas for instance would have extremely similar myosin-9 strings however there were a total 136 gaps and 136 mismatches in the comparison between the two strings. Therefore, we surprisingly must conclude that the two closest entities in this biological set are the pig-tailed macaque and the bleeding heart monkey because the strings were the same.</p>
+
+    </div>
+  </body>
