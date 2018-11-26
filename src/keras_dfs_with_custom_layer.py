@@ -17,12 +17,13 @@ from sklearn.preprocessing import LabelEncoder
 from keras.constraints import max_norm
 
 
-'''This is the main thing we're working with.  Increasing the regularization on the input layer with DECREASE the number of features
+'''
+This is the main thing we're working with.  Increasing the regularization on the input layer with DECREASE the number of features
 selected.  Setting it to 0 allows the neural network to just grab everything because it can.  We can definitely just increase this
 until the quality of the model starts to erode.  Just before that point we will have a minimal feature set and a high quality model which
 is what we are going for I think.
 '''
-FEATURE_REG = 0 #discourage features from being selected
+FEATURE_REG =1 #discourage features from being selected
 
 '''This is also necessary, otherwise the neural net could just ramp up the rest of the weights to compinsate for the
 surpression on the input layer.
@@ -56,11 +57,11 @@ ffnn = Sequential()
 
 # this model definitely will break if number of nodes and input shape differ.  They are one to one and I haven't figured out how to 
 #   fully automate their connection
-ffnn.add(OneToOne(102, name = 'input', input_shape = (102, ), use_bias = False, activation = 'linear', kernel_regularizer = l1(FEATURE_REG)))
+ffnn.add(OneToOne(102, name = 'input', input_shape = (102, ), use_bias = False, activation = 'linear', kernel_regularizer = l2(FEATURE_REG)))
 
 
-ffnn.add(Dense(128, name = 'layer1', input_shape = (102, ), activation = 'relu', kernel_regularizer = l1(MODEL_REG)))
-ffnn.add(Dense(64, name = 'layer2', activation = 'relu', kernel_regularizer = l1(MODEL_REG)))
+ffnn.add(Dense(128, name = 'layer1', activation = 'sigmoid', kernel_regularizer = l1(MODEL_REG)))
+ffnn.add(Dense(64, name = 'layer2', activation = 'sigmoid', kernel_regularizer = l1(MODEL_REG)))
 ffnn.add(Dense(7, name = 'output', activation = 'softmax'))
 ffnn.compile(optimizer = SGD(lr = 0.01),
               loss = 'categorical_crossentropy',
@@ -68,7 +69,7 @@ ffnn.compile(optimizer = SGD(lr = 0.01),
 
 #really fast run of the model, just 15 epochs and 100 batch size.  We can improve with more epochs and smaller batch sizes
 #but the model slows down then.
-ffnn.fit(x = X_train, y = y_train, epochs = 15, batch_size = 100, validation_data = [X_val, y_val])
+ffnn.fit(x = X_train, y = y_train, epochs = 100, batch_size = 100, validation_data = [X_val, y_val])
 
 #get accuracy
 print(ffnn.evaluate(X_test, y_test))
