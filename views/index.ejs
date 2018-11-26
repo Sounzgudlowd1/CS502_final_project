@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- header partial -->
+  <% include ./_header %>
+</head>
+<% include ./_adhoc_styling %>
+
+<body data-spy="scroll" data-target=".scroll-bootstrap" data-offset="50">
+  <!-- NAVBAR-->
+  <% include ./_nav %>
+  <!--===============================================================-->
+  <!-- INTRO-->
+  <!--===============================================================-->
+
+  <div id="home">
+    <div class="bg-intro">
+      <div class="container container-intro">
+        <div class="row-intro row">
+          <div class="col-sm-5 col-xs-12">
+            <h1 class="title-intro animated fadeInDown">cs502 TEAM</h1>
+            <h2 class="subtitle-intro animated fadeInLeft">"Reinventing DNA with Computational Molecular Biology"</h2>
+          </div>
+          <!-- SLIDER-BROWSER-->
+          <!--===============================================================-->
+          <div class="col-browser col-sm-7 col-xs-12">
+            <div class="animated fadeInDown">
+              <img class="img-browser" src="frontend-resources/images/browser-slider/browser.png" alt="browser">
+              <div class="wrapper-sl wrapper-browser">
+                <ul id="slider-intro" class="slider" >
+                  <li><img src="frontend-resources/images/browser-slider/1.svg" alt="slide-1"/></li>
+                  <li><img src="frontend-resources/images/browser-slider/2.svg" alt="slide-2"/></li>
+                  <li><img src="frontend-resources/images/browser-slider/3.svg" alt="slide-1"/></li>
+                  <li><img src="frontend-resources/images/browser-slider/4.svg" alt="slide-1"/></li>
+                  <li><img src="frontend-resources/images/browser-slider/5.svg" alt="slide-1"/></li>
+                </ul>
+                <div class="wrapper-nav">
+                  <div class="div-p div-p-browser"><i id="p-intro"></i></div>
+                  <div class="div-n div-n-browser"><i id="n-intro"></i></div>
+                </div>
+              </div>
+            </div>
+          </div><!-- SLIDER-BROWSER-END-->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TEAM -->
+  <!--===============================================================-->
+  <div id="team">
+    <div class="bg-team">
+      <div class="container">
+        <div class="row">
+          <div class="col-sm-12 wow fadeInUp" data-wow-delay="0.2s">
+            <h1 class="header-title">THE TEAM</h1>
+            <hr>
+          </div>
+        </div>
+
+        <div class="row row-team">
+
+          <!-- TEAM-1 -->
+          <div class="col-team1 col-sm-4 wow pulse">
+            <div class="wrapper-team-pic">
+              <img class="img-team" src="frontend-resources/images/team/porterpic.jpeg" alt="team">
+            </div>
+            <h2 class="team-title">Dave Porter</h2>
+          </div>
+          <!-- TEAM-2 -->
+          <div class="col-team2 col-sm-4 wow pulse" >
+            <div class="wrapper-team-pic">
+              <img class="img-team" src="frontend-resources/images/team/oslandpic.jpg" alt="team">
+            </div>
+            <h2 class="team-title">Erik Osland</h2>
+          </div>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- PROJECTS -->
+  <!--===============================================================-->
+  <div id="projects">
+    <div class="col-sm-12" style="margin-bottom:70px">
+      <h1 class="header-title">Projects</h1>
+      <hr>
+    </div>
+    <div class="row">
+      <div class="col-sm-4">
+        <img src="frontend-resources/images/dna.svg" style="max-height:150px">
+        <h1 class="title-blog"><a href="project1">Project 1</a></h1>
+        <p class="date-blog">Due Sept 26th</p>
+        <p style="font-size:15px;">
+          Find a biological database of your choice and download 2 closely related entries from it. How did you determine that the entries are closely related? What is the “distance” between the entries? How did you define and compute it? Put all the information on your website </p>
+        <a href="project1" class="btn btn-flat">Read Results   »</a>
+      </div>
+      <div class="col-sm-4" style="padding-left:20px">
+        <img src="frontend-resources/images/research.svg" style="max-height:150px">
+        <h1 class="title-blog"><a href="paper_review">Project 2</a></h1>
+        <p class="date-blog">Due Oct 3rd</p>
+        <p style="font-size:15px;"> Look through the papers in RECOMB conference years 2014-2015. Choose a paper, discuss it in your group. Write a one paragraph summary of the paper (not the abstract) and a summary of your discussion: Do you like the problem and the approach? Would you like to present it to the rest of the class? If you don’t like the approach, would like to try to do it better? Post the summary and your thoughts/commentary (if any) on your website. </p>
+        <a href="paper_review" class="btn btn-flat">Read Results  »</a>
+      </div>
+      <div class="col-sm-4" style="padding-left:20px">
+        <img src="frontend-resources/images/brain.svg" style="max-height:150px">
+        <h1 class="title-blog"><a href="final_project">FINAL PROJECT</a></h1>
+        <p class="date-blog">Due Dec 9th</p>
+        <p style="font-size:15px;">Deep Feature Selection</p>
+        <a href="final_project" class="btn btn-flat">Read Results  »</a>
+      </div>
+    </div>
+  </div>
+
+  <section class="portfolio" id="proposal">
+    <div class="container" style="width:65%">
+      <h1 class="header-title">Project Proposal</h1>
+    </div>
+    <hr>
+  </section>
+
+
+  <section class="portfolio" id="proposal">
+    <div class="container" style="width:65%;background-color:#EDEEF0">
+      <h1 style="font-size:25px;text-align:center;font-family:times new roman"><br><br><br>Deep Feature Selection:<br />A Survey of Applications <br /> Using Biological Data<br /><br>
+  </h1>
+  <br>
+      <div class="row">
+        <div class="col-lg-12 ml-auto">
+          <p class="p1" style="font-family:times new roman"><strong>Introduction:</strong></p>
+
+          <p style="font-family:times new roman">In a biological context, feature selection means extracting the elements in a biological sequence (features) that contribute most substantially to some target class.  For example, perhaps the presence of “ACTGT” at positions 931-935 of a chromosome means that the patient may develop some type of cancer. A paper came out in the Journal of Computational Biology that used an interesting neural network architecture and model training strategy to select the most important features in the context of cis-regulatory elements in non-coding DNA sequences [1]. The authors claim that simpler, linear models are incapable of identifying the patterns necessary to predict the target class. So they use deep feedforward neural networks for classification. After analysis of the methods of this paper, we believe that the same techniques could be applied more generally to a broader range of biological data sets than previously studied. We are uncertain whether the same regularized neural network technique (deep feature selection) will successfully translate to a broader feature generation model. However, if successful, this model should identify and select important features for the a variety of classification tasks.  The classification models we will survey can include any type of target class -- the presence or absence of cancer, hair color, eye color -- even regression tasks such as predicted life span.
+          </p>
+          <br>
+          <p class="p1" style="font-family:times new roman"><strong>Goals:</strong></p>
+          <ul style="font-family:times new roman">
+            <li>1.	Find labeled biological data sets  
+            <li>2.	Successfully implement algorithm for broader feature extraction </li>
+            <li>3.	Train models to identify sequences and report the features (chromosome positions, for example) that contribute the most substantially.</li> 
+            <li>4.	Assess how well the technique of Deep Feature Selection applies across a variety of biological data sets.</li>
+          </ul>
+          <br>
+
+          <p class="p1" style="font-family:times new roman"><strong>Methods:</strong></p>
+
+          <p style="font-family:times new roman">We will need to collect a large set of labeled biological data, develop a high quality model that takes these biological sequences (or other biological data) and outputs the correct class, then perform the necessary modifications to transform it from a feedforward neural network to the deep feature selection model presented in the paper.  At this point we are not certain if an off-the-shelf neural network package is capable of the required modifications, therefore, this project will be broken into two stages.  First we will develop the high quality neural network classifier, then we have a stretch goal of converting it to a deep feature selection model as presented in the paper.  We will be using Keras and Tensorflow through Python to develop the neural networks.</p>
+          <br>
+
+          <p class="p1" style="font-family:times new roman"><strong>Biological Datasets:</strong></p>
+          <p style="font-family:times new roman">As our proposal suggests, we are considering the application of the deep learning model described above for a number of biological databases. This survey aims to provide a evaluation of this model for these data sets and an analysis of the findings for each biological data set category. </p>
+
+          <table style="font-family:times new roman">
+            <tr>
+              <th>Data set</th>
+              <th>Labels</th>
+            </tr>
+
+            <tr>
+              <td>DNA (coding/non-coding)</td>
+              <td>Cancer, disease, any physical features, intelligence, etc.</td>
+            </tr>
+            <tr>
+              <td>Protein</td>
+              <td>Cancer, disease</td>
+            </tr>
+            <tr>
+              <td>Bacteria</td>
+              <td>Bacteria species presence in microbiome -> reported symptoms</td>
+            </tr>
+          </table>
+          <br>
+          <br>
+          <br>
+          <br>
+          <hr>
+          <p class="p1" style="font-family:times new roman"><strong>References:</strong></p>
+
+          <p style="padding-left:50px;font-family:'courier new'">1. Deep Feature Selection: Theory and Application to Identify Enhancers and Promoters
+  YIFENG LI, CHIH-YU CHEN, and WYETH W. WASSERMAN, JOURNAL OF COMPUTATIONAL BIOLOGY</p>
+          <p style="padding-left:50px;font-family:'courier new'">Volume 23, Number 5, 2016 <br>
+          # Mary Ann Liebert, Inc. <br>
+          Pp. 322–336 <br>
+          DOI: 10.1089/cmb.2015.0189</p>
+        </div>
+      </div>
+
+      <br><br>
+    </div>
+  </section>
+  <!-- Sources -->
+  <!--===============================================================-->
+  <div id="sources">
+    <div class="bg-team">
+      <div class="container container-intro">
+        <div class="row-blog-header row">
+          <div class="col-sm-12 wow fadeInUp" data-wow-delay="0.2s">
+          <h1 class="header-title">Sources</h1>
+          <hr>
+          </div>
+        </div>
+        <div>
+          <ul style="text-align:left">
+            <li>
+              <p class="title-contact-sm" style="color: white">Website Design: <a style="font-style: italic;color: blue " href="http://mamoot-themes.com">MamootStudios</a></p>
+            </li>
+            <li >
+              <p class="title-contact-sm" style="color: white">Myocin-9 Database: <a style="font-style: italic;color:blue" href="https://www.ncbi.nlm.nih.gov/protein/">NCBI</a></p>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </div>
+<% include ./_js_partials %>
+</body>
+</html>
