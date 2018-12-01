@@ -10,29 +10,30 @@ import housing_outliers as ho
 from DFS import DFS
 from sklearn.model_selection import train_test_split
 
+#all the preprocessing from my cs412 project
 data = pd.read_csv('../data/housing/data.csv')
-
 data = hn.fill_in_missing_values(data)
 data = ho.remove_outliers(data)
 data = hn.normalize(data)
 X = data.drop('log_SalePrice', 1)
 y = data['log_SalePrice']
 
+#do the 0-1 normalization
 X = (X - X.min()) / (X.max() - X.min())
 
+#80/20 split
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2)
 
 
-# custom R2-score metrics for keras backend
+# custom R2-score metrics for keras backend, borrowed from the interwebs
 from keras import backend as K
-
 def r2_keras(y_true, y_pred):
     SS_res =  K.sum(K.square(y_true - y_pred)) 
     SS_tot = K.sum(K.square(y_true - K.mean(y_true))) 
     return ( 1 - SS_res/(SS_tot + K.epsilon()) )
 
+#rachet down on features, starting with no regularization and going to relatively harsh regularization
 lambdas = [0, 0.0001, 0.001, 0.01, 0.1]
-models = []
 for lda in lambdas:
     reg_model = DFS(in_dim = len(X_train.columns), 
                     num_classes = 1, 
