@@ -18,7 +18,7 @@ np.random.seed(8)
 from sklearn.model_selection import train_test_split
 
 #get data
-data = pd.read_csv('iris.csv')
+data = pd.read_csv('template_code/iris.csv')
 print(data.columns)
 #get only the left two columns
 X_data = data.drop(['type'], axis = 1)
@@ -47,7 +47,7 @@ model.compile(optimizer = keras.optimizers.SGD(lr = 0.1),
               )
 
 #actually do training
-history = model.fit(x = X_train, y = y_train, epochs = 100, batch_size = 50, 
+history = model.fit(x = X_train, y = y_train, epochs = 100, batch_size = 50,
           validation_data = [X_validation, y_validation])
 
 
@@ -64,5 +64,3 @@ print("\nWeights:")
 print(model.get_layer('dense_one').get_weights())
 
 #
-
-

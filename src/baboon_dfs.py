@@ -16,7 +16,7 @@ bad_cols =['LAT_mean', 'LAT_mean_n', 'LAT_std', 'LON_std', 'LON_mean', 'LON_mean
 
 data_dir = "../data/baboon/"
 
-'''
+
 data = None
 for i, file in enumerate(listdir(data_dir)):
     if i != 9: #9 is a problem child, I have absolutely no idea why but it is. So, BYE FELICIA!
@@ -66,7 +66,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size = 0.2)
 num_classes = len(y[0])
 input_dim = len(X.columns)
 #actually do neural net training
-'''
+
 lambda1s = [1, 10]
 models = []
 for lmda in lambda1s:

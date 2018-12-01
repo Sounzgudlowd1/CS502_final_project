@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- header -->
+  <% include ./_header %>
+
+  <!-- NAVBAR-->
+  <% include ./_nav %>
+
+  <body>
+    <div style="width:25%;padding:20px;padding-top:200px">
+      <form method="POST" id="ajax_form" action="/" role="form" class="form-contact">
+        <div class="col-sm-10">
+          <div class="form-group">
+            <text>Number of Epochs</text>
+            <input style='height:30px' class="form-control form-flat" type="text" name="epochs" id="epochs" placeholder="e.g. 5" >
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <div class="form-group">
+            <text>Batch Size</text>
+            <input style='height:30px' class="form-control form-flat" type="text" name="batch" id="batch_size" placeholder="e.g. 100" >
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <div class="form-group">
+            <text>Learning Rate</text>
+            <input style='height:30px' class="form-control form-flat" type="text" name="" id="learning_rate" placeholder="e.g. .01" >
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <div class="form-group">
+            <text>Hidden Layers</text>
+            <input style='height:30px' class="form-control form-flat" type="text" name="" id="hidden_layers" placeholder="e.g. 1024 256" >
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <div class="form-group">
+            <text>Lambdas</text>
+            <input style='height:30px' class="form-control form-flat" type="text" name="" id="lambdas" placeholder="e.g. 1,10" >
+          </div>
+        </div>
+        <div class="col-sm-10">
+          <div class="form-group">
+            <text>Alphas</text>
+            <input style='height:30px' class="form-control form-flat" type="text" name="" id="alphas" placeholder="e.g. .001" >
+          </div>
+        </div>
+      </form>
+      <form ref='upload'
+       id='uploadForm'
+       action='http://localhost:3000/upload'
+       method='post'
+       encType="multipart/form-data">
+         <input type="file" name="filedata" />
+         <input type='submit' value='Upload!' />
+      </form>
+    </div>
+    <% if (data_uploaded == 'true') { %>
+      <text><%= data_uploaded %></text>
+    <% } %>
+  </body>
+  <script type="text/javascript">
+
+
+
+  </script>
+</html>
