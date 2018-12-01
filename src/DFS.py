@@ -8,7 +8,8 @@ Created on Mon Nov 26 12:54:37 2018
 from keras import Sequential
 from keras.layers import Dense
 from OneToOne import OneToOne
-from keras.optimizers import SGD
+from keras.optimizers import SGD, Adam
+from keras.regularizers import l1, l2
 from ElasticNetRegularizer import ElasticNetRegularizer
 import numpy as np
 import matplotlib.pyplot as plt
@@ -29,20 +30,29 @@ class DFS(Sequential):
     learning_rate - double. used in stochastic gradient decent.  Controls step size.
     '''
     def __init__(self, 
-                 in_shape,  #can't really guess about the inputs and outputs of the model, so no defaults provided
+                 in_dim, 
                  num_classes,
                  hidden_layers = [128, 64], 
-                 lambda1 = 0.003,  # <---these are the parameters from the study, feel free to override
+                 lambda1 = 0.003,
                  lambda2 = 1,
                  alpha1 = 0.0001,
                  alpha2 = 0,
-                 learning_rate = 0.01):
+                 learning_rate = 0.01,
+                 hidden_layer_activation = 'sigmoid',
+                 output_layer_activation = 'softmax',
+                 loss_function = 'categorical_crossentropy',
+                 addl_metrics = ['accuracy']):
+        
+        
+        
         super().__init__()
+        
+        
         self.add(
-                OneToOne(in_shape[0], name = 'input', 
-                         input_shape = in_shape, 
-                         use_bias = False, 
-                         activation = 'linear', 
+                OneToOne(in_dim, 
+                         name = 'input', 
+                         input_dim = in_dim, 
+                         use_bias = False,
                          kernel_regularizer = ElasticNetRegularizer(lambda1, lambda2)
                          )
                 )
@@ -51,19 +61,25 @@ class DFS(Sequential):
             self.add(
                     Dense(num_nodes, 
                           name = 'layer' + str(i), 
-                          activation = 'sigmoid', 
+                          activation = hidden_layer_activation, 
                           kernel_regularizer = ElasticNetRegularizer(alpha1, alpha2)
                           )
                     
                     )
-        self.add(Dense(num_classes, name = 'output', activation = 'softmax'))
+        self.add(Dense(num_classes, name = 'output', 
+                       activation = output_layer_activation,
+                       kernel_regularizer = ElasticNetRegularizer(alpha1, alpha2)
+                       )
+                    )
+        
+        
         self.compile(optimizer = SGD(lr = learning_rate),
-              loss = 'categorical_crossentropy',
-              metrics = ['accuracy'])
+              loss = loss_function,
+              metrics = addl_metrics)
 
     def get_input_weights(self):
-        return self.get_layer('input').get_weights()[0]
-    
+        wts = self.get_layer('input').get_weights()[0]
+        return wts.reshape(len(wts)) #convert from column vector to row vector
     
     '''
     handles categorical and binary output.  So, y must be one hot encoded or already in 0/1 format
@@ -85,10 +101,20 @@ class DFS(Sequential):
     
     def show_bar_chart(self):
         wts = self.get_input_weights() #get raw data from neural net
-        wts = wts.reshape(len(wts))  #convert from column vector to row vector
         wts = np.abs(wts)
         y_pos = np.arange(len(wts))
         plt.bar(y_pos, wts)
         plt.show()
+        
+    
+    
+    def get_top_features(self, num_features, features):
+        def get_weight(e):
+            return e[1]
+        weights = self.get_input_weights()
+        weights = abs(weights)
+        weights_features = list(zip(features, weights))
+        sorted_weights = sorted(weights_features, key = get_weight, reverse = True)
+        return sorted_weights[0:num_features]
     
     
