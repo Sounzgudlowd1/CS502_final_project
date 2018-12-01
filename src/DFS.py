@@ -130,8 +130,19 @@ class DFS(Sequential):
     def write_predictions(self, file_name, X, y_true):
         file = open(file_name, 'w')
         y_pred = self.predict(X)
-        y_pred = y_pred.reshape(len(y_pred)) #go from column vector to row vector
+        #check if it is a regression model or a classificaion model
+    
         y_true = np.array(y_true)
+        if len(y_true[0]) == 1: #regression case
+            y_true.reshape(len(y_true))
+            y_pred.reshape(len(y_pred))
+        else: # classification case
+            y_true = np.argmax(y_true, axis = 1)
+            y_pred = np.argmax(y_pred, axis = 1)
+            
+            
+            
+        
         file.write('y_true,y_pred\n')
         for i in range(len(y_pred)):
             file.write(str(y_true[i]) 
