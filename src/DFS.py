@@ -106,15 +106,35 @@ class DFS(Sequential):
         plt.bar(y_pos, wts)
         plt.show()
         
-    
+    def get_weight_feature_tuples(self, features):
+        weights = self.get_input_weights()
+        weights = abs(weights)
+        return list(zip(features, weights))
+                
     
     def get_top_features(self, num_features, features):
         def get_weight(e):
             return e[1]
-        weights = self.get_input_weights()
-        weights = abs(weights)
-        weights_features = list(zip(features, weights))
+        weights_features = self.get_weight_feature_tuples(features)
         sorted_weights = sorted(weights_features, key = get_weight, reverse = True)
         return sorted_weights[0:num_features]
     
+    def write_features(self, file_name, features):
+        weights_features = self.get_weight_feature_tuples(features)
+        file = open(file_name, 'w')
+        file.write('feature,weight\n')
+        for weight_feature in weights_features:
+            file.write(str(weight_feature[0]) + "," + str(weight_feature[1]) + '\n')
+        file.close()
     
+    def write_predictions(self, file_name, X, y_true):
+        file = open(file_name, 'w')
+        y_pred = self.predict(X)
+        y_pred = y_pred.reshape(len(y_pred)) #go from column vector to row vector
+        y_true = np.array(y_true)
+        file.write('y_true,y_pred\n')
+        for i in range(len(y_pred)):
+            file.write(str(y_true[i]) 
+            + "," + str(y_pred[i]) 
+            + "\n")
+        file.close()

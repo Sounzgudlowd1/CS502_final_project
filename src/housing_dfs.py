@@ -31,15 +31,22 @@ def r2_keras(y_true, y_pred):
     SS_tot = K.sum(K.square(y_true - K.mean(y_true))) 
     return ( 1 - SS_res/(SS_tot + K.epsilon()) )
 
-reg_model = DFS(in_dim = len(X_train.columns), 
-                num_classes = 1, 
-                lambda1 = 0.001, 
-                alpha1 = 0.0001,
-                hidden_layers = [128, 32],
-                hidden_layer_activation = 'relu', 
-                output_layer_activation = 'linear', 
-                loss_function = 'mean_squared_error', 
-                addl_metrics = [r2_keras])
-
-reg_model.fit(x = X_train, y = y_train, batch_size = 10, epochs = 50, validation_data = [X_test, y_test])
+lambdas = [0, 0.0001, 0.001, 0.01, 0.1]
+models = []
+for lda in lambdas:
+    reg_model = DFS(in_dim = len(X_train.columns), 
+                    num_classes = 1, 
+                    lambda1 = lda, 
+                    alpha1 = 0.0001,
+                    hidden_layers = [128, 32],
+                    hidden_layer_activation = 'relu', 
+                    output_layer_activation = 'linear', 
+                    loss_function = 'mean_squared_error', 
+                    learning_rate = 0.005,
+                    addl_metrics = [r2_keras])
+    
+    reg_model.fit(x = X_train, y = y_train, batch_size = 10, epochs = 100, validation_data = [X_test, y_test])
+    reg_model.write_features('../results/housing_weights_'+ str(lda) + '.csv', X.columns)
+    reg_model.write_predictions('../results/housing_predictions_' + str(lda) + '.csv', X_test, y_test)
+    
 
