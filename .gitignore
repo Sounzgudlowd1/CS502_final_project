@@ -2,3 +2,4 @@ env
 .env
 node_modules
 hmp_utils/ibd
+data
