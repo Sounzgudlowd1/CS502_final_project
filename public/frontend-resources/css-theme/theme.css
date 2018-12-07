@@ -1877,3 +1877,69 @@ textarea.form-control {
 	    margin-bottom: 20px
 	}
 }
+
+
+
+/* for the barchart */
+.datefillter {
+    display: inline-flex;
+    justify-content: flex-end;
+
+}
+
+.render_button {
+    width :100%;
+}
+
+.resolvedpercentage {
+ border: solid;
+   border-width: 2px;
+  border-color: rgba(0, 0, 0, 0.11);
+  display: block;
+  position: relative;
+  margin: auto;
+   /*height: 550px;*/
+}
+
+.symptoms_bar_chart {
+ border: solid;
+   border-width: 2px;
+  border-color: rgba(0, 0, 0, 0.11);
+  display: block;
+  position: relative;
+  margin: auto;
+   /*height: 550px;*/
+
+
+}
+.resolved_line_chart {
+ border: solid;
+   border-width: 2px;
+  border-color: rgba(0, 0, 0, 0.11);
+   display: block;
+  position: relative;
+  margin: auto;
+  /*height: 550px;*/
+}
+.word_cloud {
+  position: relative;
+  margin: auto;
+  /*height: 550px;*/
+   border: solid;
+  border-width: 2px;
+  border-color: rgba(0, 0, 0, 0.11);
+  display: block;
+}
+
+.symptoms_bar {
+  fill: #80cbc4;
+}
+
+.symptoms_grid path {
+  stroke-width: 0;
+}
+
+.symptoms_grid .tick line {
+  stroke: #9FAAAE;
+  stroke-opacity: 0.3;
+}

@@ -6,7 +6,7 @@ var logger = require('morgan');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
-var helmet = require('helmet')
+// var helmet = require('helmet')
 var fileUpload = require('express-fileupload');
 var PythonShell = require('python-shell');
 
@@ -19,8 +19,8 @@ app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 app.use(logger('dev'));
-var helmet = require('helmet')
-app.use(helmet())
+// var helmet = require('helmet')
+// app.use(helmet())
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
