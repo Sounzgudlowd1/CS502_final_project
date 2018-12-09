@@ -5,10 +5,88 @@
 
   <!-- NAVBAR-->
   <% include ./_nav %>
+  <% include ./_js_partials %>
+
 
   <!--===============================================================-->
 
   <!-- INTRO-->
+
+  <script src="http://d3js.org/d3.v3.js"></script>
+
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js"></script> -->
+  <!-- <script src="javascripts/heatmap.js"></script> -->
+
+  <style>
+  rect.bordered {
+    stroke: #E6E6E6;
+    stroke-width:2px;
+  }
+
+  text.mono {
+    font-size: 9pt;
+    font-family: Consolas, courier;
+    fill: #aaa;
+  }
+
+  text.axis-workweek {
+    fill: #000;
+  }
+
+  text.axis-worktime {
+    fill: #000;
+  }
+
+  .axis text {
+      font: 10px sans-serif;
+  }
+
+  .axis line, .axis path {
+      fill: none;
+      stroke: #000;
+      shape-rendering: crispEdges;
+  }
+
+  td, th, tr {
+      padding: 4px;
+      border: 1px solid black;
+  }
+
+  table{
+      border-collapse: collapse;
+  }
+
+  #dataView{
+    margin-top:50px;
+  }
+
+  .chart_selection{
+    display: block;
+  }
+
+  #_bar_chart{
+    display: none;
+  }
+  #brca_bar_chart{
+    display: none;
+  }
+  #coad_bar_chart{
+    display: none;
+  }
+  #prad_bar_chart{
+    display: none;
+  }
+  #luad_bar_chart{
+    display: none;
+  }
+  #kirc_bar_chart{
+    display: none;
+  }
+  #cis_bar_chart{
+    display: none;
+  }
+
+  </style>
 
   <body data-spy="scroll" data-target=".scroll-bootstrap" data-offset="50">
     <div style="padding:20px;padding-top:100px;">
@@ -16,6 +94,73 @@
 
       <a href="dfs_app" class="btn btn-flat">Go to DFS App</a>
     </div>
+      <div class="row" style="padding-left:0px">
+        <ul>
+          <li><a id="reset" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">REMOVE CHARTS</a></li>
+          <li><a id="brca" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-BRCA</a></li>
+          <li><a id="coad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-COAD</a></li>
+          <li><a id="kirc" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-KIRC</a></li>
+          <li><a id="luad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-LUAD</a></li>
+          <li><a id="prad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-PRAD</a></li>
+          <li><a id="cis" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">DNA-CIS</a></li>
+        </ul>
+
+      </div>
+
+
+    <div>
+      <svg id="cis_bar_chart" ></svg>
+      <svg id="brca_bar_chart"></svg>
+      <svg id="coad_bar_chart"></svg>
+      <svg id="kirc_bar_chart"></svg>
+      <svg id="luad_bar_chart"></svg>
+      <svg id="prad_bar_chart"></svg>
+
+      <div id="dataView"></div>
+
+      <div id="confusion_matrix"></div>
+    </div>
 
   </body>
+  <script src='javascripts/barchart.js'></script>
+  <script src='javascripts/rna_barchart_brca.js'></script>
+  <script src='javascripts/rna_barchart_coad.js'></script>
+  <script src='javascripts/rna_barchart_kirc.js'></script>
+  <script src='javascripts/rna_barchart_luad.js'></script>
+  <script src='javascripts/rna_barchart_prad.js'></script>
+  <script src='javascripts/confusion_matrix.js'></script>
+  <script type="text/javascript">
+    // (funciton(){
+    //
+    // }
+    $('#reset').click(function(){
+      $('#cis_bar_chart').hide();
+      $('#brca_bar_chart').hide();
+      $('#coad_bar_chart').hide();
+      $('#kirc_bar_chart').hide();
+      $('#luad_bar_chart').hide();
+      $('#prad_bar_chart').hide();
+
+    })
+    $('#brca').click(function(){
+      $('#brca_bar_chart').show();
+    })
+    $('#coad').click(function(){
+      $('#coad_bar_chart').show();
+    })
+    $('#kirc').click(function(){
+      $('#kirc_bar_chart').show();
+    })
+    $('#luad').click(function(){
+      $('#luad_bar_chart').show();
+    })
+    $('#prad').click(function(){
+      $('#prad_bar_chart').show();
+    })
+    $('#cis').click(function(){
+      $('#cis_bar_chart').show();
+    })
+
+  </script>
+
 </html>

@@ -96,7 +96,7 @@ function Matrix(options) {
 	    .attr("y2", 5);
 
 	columnLabels.append("text")
-	    .attr("x", 30)
+	    .attr("x", 10)
 	    .attr("y", y.rangeBand() / 2)
 	    .attr("dy", ".22em")
 	    .attr("text-anchor", "end")
@@ -211,7 +211,7 @@ function tabulate(data, columns) {
 
 
 
-d3.csv("viz_data/cis_results.csv", function(error, data) {
+d3.csv("viz_data/cis_results_1.csv", function(error, data) {
   var t_pos=0;
   var t_neut=0;
   var t_neg=0;
@@ -223,28 +223,32 @@ d3.csv("viz_data/cis_results.csv", function(error, data) {
     //convert to respective types
     switch(+d.predicted){
       case 0:
-      if (+d.actual == +d.predicted){
-        t_neg = t_neg+1;
-      }
-      else{
-        f_neg = f_neg+1;
-      }
+	      if (+d.actual == +d.predicted){
+	        t_neg = t_neg+1;
+	      }
+	      else{
+	        f_neg = f_neg+1;
+	      }
+				break;
       case 1:
-      if (+d.actual == +d.predicted){
-        t_neut = t_neut+1;
-      }
-      else{
-        f_neut = f_neut+1;
-      }
+	      if (+d.actual == +d.predicted){
+	        t_neut = t_neut+1;
+	      }
+	      else{
+	        f_neut = f_neut+1;
+	      }
+				break;
       case 2:
-      if (+d.actual == +d.predicted){
-        t_pos = t_pos+1;
-      }
-      else{
-        f_pos = f_pos+1;
-      }
+	      if (+d.actual == +d.predicted){
+	        t_pos = t_pos+1;
+	      }
+	      else{
+	        f_pos = f_pos+1;
+	      }
+				break;
     }
   });
+	console.log(t_pos, t_neut, t_neg);
 
 
   var confusionMatrix = [
@@ -274,7 +278,7 @@ d3.csv("viz_data/cis_results.csv", function(error, data) {
   var computedData = [];
   computedData.push({"F1":f1, "PRECISION":precision,"RECALL":recall,"ACCURACY":accuracy});
 
-  var labels = ['Class 0', 'Class 1', 'Class 2'];
+  var labels = ['Class 2', 'Class 1', 'Class 0'];
 
   Matrix({
     container : '#confusion_matrix',

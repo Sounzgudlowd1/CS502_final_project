@@ -1,3 +1,4 @@
+
 (function(){
   var margin = {top: 20, right: 20, bottom: 70, left: 40},
       width = 1000 - margin.left - margin.right,
@@ -11,16 +12,9 @@
   // Parse the date / time
   // var	parseDate = d3.time.format("%Y-%m").parse;
 
-  var x = d3.scale.ordinal().rangeRoundBands([0, width], .05);
+  var x = d3.scale.ordinal().rangeRoundBands([0, width], .3);
 
   var y = d3.scale.linear().range([height, 0]);
-
-  var svg = d3.select("#cis_bar_chart")
-      .attr("width", width + margin.left + margin.right)
-      .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-      .attr("transform",
-            "translate(" + margin.left + "," + margin.top + ")");
 
   var xAxis = d3.svg.axis()
       .scale(x)
@@ -32,7 +26,14 @@
       .orient("left")
       .ticks(10);
 
-  d3.csv("viz_data/cis.csv", function(error, data) {
+  var svg_rna = d3.select("#rna_bar_chart")
+      .attr("width", width + margin.left + margin.right)
+      .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+      .attr("transform",
+            "translate(" + margin.left + "," + margin.top + ")");
+
+  d3.csv("viz_data/rna_weights_BRCA_1k.csv", function(error, data) {
 
       data.forEach(function(d) {
         //convert to respective types
@@ -42,7 +43,7 @@
     x.domain(data.map(function(d) { return d.genes; }));
     y.domain([0, d3.max(data, function(d) { return d.value; })]);
 
-    svg.append("g")
+    svg_rna.append("g")
         .attr("class", "x axis")
         .attr("transform", "translate(0," + height + ")")
         .call(xAxis)
@@ -54,7 +55,7 @@
         .attr("transform", "rotate(-70)" );
 
 
-    svg.append("g")
+    svg_rna.append("g")
         .attr("class", "y axis")
         .call(yAxis)
       .append("text")
@@ -64,7 +65,7 @@
         .style("text-anchor", "end")
         .text("Feature Weight");
 
-    svg.selectAll("bar")
+    svg_rna.selectAll("bar")
         .data(data)
       .enter().append("rect")
         .style("fill", "#36D7B3")
