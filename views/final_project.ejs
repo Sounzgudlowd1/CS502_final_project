@@ -105,6 +105,10 @@
     /* display: none; */
     float:left;
   }
+  #housing_bar_chart{
+    /* display: none; */
+    float:left;
+  }
   #cis_div{
     display: none;
   }
@@ -134,7 +138,6 @@
   #confusion_matrix_prad{
     float:left;
   }
-
 
 
 
@@ -209,16 +212,16 @@
 
       <div id="housing_div">
         <svg id="housing_bar_chart" style="height:350"></svg>
-        <!-- <div>
-          <div id="dataView_laud" style='margin-left:100px;'></div>
-          <div id="confusion_matrix_laud"></div>
-        </div> -->
+        <div>
+          <div id="housing_scat"></div>
+        </div>
       </div>
 
 
     </div>
 
   </body>
+  <script src='javascripts/scatterplot.js'></script>
   <script src='javascripts/barchart.js'></script>
   <script src='javascripts/rna_barchart_brca.js'></script>
   <script src='javascripts/rna_barchart_coad.js'></script>
