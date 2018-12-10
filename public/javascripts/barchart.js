@@ -67,7 +67,7 @@
     svg.selectAll("bar")
         .data(data)
       .enter().append("rect")
-        .style("fill", "#36D7B3")
+        .style("fill", "#253285")
         .attr("x", function(d) { return x(d.genes); })
         .attr("width", x.rangeBand())
         .attr("y", function(d) { return y(d.value); })

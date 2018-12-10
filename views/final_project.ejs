@@ -24,9 +24,8 @@
   }
 
   text.mono {
-    font-size: 9pt;
+    font-size: 7pt;
     font-family: Consolas, courier;
-    fill: #aaa;
   }
 
   text.axis-workweek {
@@ -39,11 +38,12 @@
 
   .axis text {
       font: 10px sans-serif;
+      fill:black;
   }
 
   .axis line, .axis path {
       fill: none;
-      stroke: #000;
+      stroke: black;
       shape-rendering: crispEdges;
   }
 
@@ -58,6 +58,13 @@
 
   #dataView{
     margin-top:50px;
+    margin-bottom: 20px;
+    float:top;
+  }
+  #dataView_prad{
+    margin-top:50px;
+    margin-bottom: 20px;
+    float:top;
   }
 
   .chart_selection{
@@ -65,26 +72,71 @@
   }
 
   #_bar_chart{
-    display: none;
+    /* display: none; */
+    float:left;
+
   }
   #brca_bar_chart{
-    display: none;
+    /* display: none; */
+    float:left;
+
   }
   #coad_bar_chart{
-    display: none;
+    /* display: none; */
+    float:left;
+
   }
   #prad_bar_chart{
-    display: none;
+    /* display: none; */
+    float:left;
+
   }
   #luad_bar_chart{
-    display: none;
+    /* display: none; */
+    float:left;
+
   }
   #kirc_bar_chart{
-    display: none;
+    /* display: none; */
+    float:left;
+
   }
   #cis_bar_chart{
+    /* display: none; */
+    float:left;
+  }
+  #cis_div{
     display: none;
   }
+  #brca_div{
+    display: none;
+  }
+  #prad_div{
+    display: none;
+  }
+  #coad_div{
+    display: none;
+  }
+
+  #luad_div{
+    display: none;
+  }
+  #kirc_div{
+    display: none;
+  }
+  #housing_div{
+    display: none;
+  }
+
+  #confusion_matrix{
+    float:left;
+  }
+  #confusion_matrix_prad{
+    float:left;
+  }
+
+
+
 
   </style>
 
@@ -103,22 +155,67 @@
           <li><a id="luad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-LUAD</a></li>
           <li><a id="prad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-PRAD</a></li>
           <li><a id="cis" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">DNA-CIS</a></li>
+          <li><a id="housing" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">HOUSING</a></li>
         </ul>
 
       </div>
 
 
     <div>
-      <svg id="cis_bar_chart" ></svg>
-      <svg id="brca_bar_chart"></svg>
-      <svg id="coad_bar_chart"></svg>
-      <svg id="kirc_bar_chart"></svg>
-      <svg id="luad_bar_chart"></svg>
-      <svg id="prad_bar_chart"></svg>
+      <div id="cis_div">
+        <svg id="cis_bar_chart" ></svg>
+        <div>
+          <div id="dataView" style='margin-left:100px;'></div>
+          <div id="confusion_matrix"></div>
+        </div>
+      </div>
+      <div id="brca_div">
+        <svg id="brca_bar_chart"></svg>
+        <div>
+          <div id="dataView_brca" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_brca"></div>
+        </div>
+      </div>
+      <div id='coad_div'>
+        <svg id="coad_bar_chart"></svg>
+        <div>
+          <div id="dataView_coad" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_coad"></div>
+        </div>
+      </div>
 
-      <div id="dataView"></div>
+      <div id='kirc_div'>
+        <svg id="kirc_bar_chart"></svg>
+        <div>
+          <div id="dataView_kirc" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_kirc"></div>
+        </div>
+      </div>
+      <div id='luad_div'>
+        <svg id="luad_bar_chart"></svg>
+        <div>
+          <div id="dataView_laud" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_laud"></div>
+        </div>
+      </div>
 
-      <div id="confusion_matrix"></div>
+      <div id='prad_div'>
+        <svg id="prad_bar_chart"></svg>
+        <div>
+          <div id="dataView_prad" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_prad"></div>
+        </div>
+      </div>
+
+      <div id="housing_div">
+        <svg id="housing_bar_chart" style="height:350"></svg>
+        <!-- <div>
+          <div id="dataView_laud" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_laud"></div>
+        </div> -->
+      </div>
+
+
     </div>
 
   </body>
@@ -128,38 +225,50 @@
   <script src='javascripts/rna_barchart_kirc.js'></script>
   <script src='javascripts/rna_barchart_luad.js'></script>
   <script src='javascripts/rna_barchart_prad.js'></script>
-  <script src='javascripts/confusion_matrix.js'></script>
+  <script src='javascripts/housing_barchart.js'></script>
+  <script src='javascripts/confusion_matrix_cis.js'></script>
+  <script src='javascripts/confusion_matrix_brca.js'></script>
+  <script src='javascripts/confusion_matrix_coad.js'></script>
+  <script src='javascripts/confusion_matrix_kirc.js'></script>
+  <script src='javascripts/confusion_matrix_luad.js'></script>
+  <script src='javascripts/confusion_matrix_prad.js'></script>
   <script type="text/javascript">
     // (funciton(){
     //
     // }
     $('#reset').click(function(){
-      $('#cis_bar_chart').hide();
-      $('#brca_bar_chart').hide();
-      $('#coad_bar_chart').hide();
-      $('#kirc_bar_chart').hide();
-      $('#luad_bar_chart').hide();
-      $('#prad_bar_chart').hide();
+      $('#cis_div').hide();
+      $('#housing_div').hide();
+
+      $('#brca_div').hide();
+      $('#coad_div').hide();
+      $('#kirc_div').hide();
+      $('#luad_div').hide();
+      $('#prad_div').hide();
 
     })
     $('#brca').click(function(){
-      $('#brca_bar_chart').show();
+      $('#brca_div').show();
     })
     $('#coad').click(function(){
-      $('#coad_bar_chart').show();
+      $('#coad_div').show();
     })
     $('#kirc').click(function(){
-      $('#kirc_bar_chart').show();
+      $('#kirc_div').show();
     })
     $('#luad').click(function(){
-      $('#luad_bar_chart').show();
+      $('#luad_div').show();
     })
     $('#prad').click(function(){
-      $('#prad_bar_chart').show();
+      $('#prad_div').show().css("display", "inline");
     })
     $('#cis').click(function(){
-      $('#cis_bar_chart').show();
+      $('#cis_div').show().css("display", "inline");
     })
+    $('#housing').click(function(){
+      $('#housing_div').show().css("display", "inline");
+    })
+
 
   </script>
 

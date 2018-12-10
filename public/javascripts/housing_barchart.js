@@ -26,14 +26,14 @@
       .orient("left")
       .ticks(10);
 
-  var svg_rna = d3.select("#luad_bar_chart")
+  var svg_rna = d3.select("#housing_bar_chart")
       .attr("width", width + margin.left + margin.right)
       .attr("height", height + margin.top + margin.bottom)
     .append("g")
       .attr("transform",
             "translate(" + margin.left + "," + margin.top + ")");
 
-  d3.csv("viz_data/rna_weights_LUAD.csv", function(error, data) {
+  d3.csv("viz_data/housing_weights.csv", function(error, data) {
 
       data.forEach(function(d) {
         //convert to respective types
@@ -60,15 +60,15 @@
         .call(yAxis)
       .append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 6)
-        .attr("dy", ".71em")
+        .attr("y", 9)
+        .attr("dy", "0em")
         .style("text-anchor", "end")
         .text("Feature Weight");
 
     svg_rna.selectAll("bar")
         .data(data)
       .enter().append("rect")
-        // .style("fill", "#36D7B3")
+        // .style("fill", "#0000")
         .attr("x", function(d) { return x(d.genes); })
         .attr("width", x.rangeBand())
         .attr("y", function(d) { return y(d.value); })
@@ -77,7 +77,7 @@
           div.transition()
             .duration(200)
             .style("opacity", .9);
-          div	.html("<b>GENE:____ </b>" + d.genes + "<br/>" + '<b>WEIGHT: </b>'+'__ ' + d.values)
+          div	.html("<b>FEATURE:____ </b>" + d.genes + "<br/>" + '<b>WEIGHT: </b>'+'__ ' + d.values)
             .style("left", (d3.event.pageX) + "px")
             .style("top", (d3.event.pageY - 28) + "px");
           })
