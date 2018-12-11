@@ -130,12 +130,12 @@
     display: none;
   }
 
-  #confusion_matrix{
+  /* #confusion_matrix{
     float:left;
   }
   #confusion_matrix_prad{
     float:left;
-  }
+  } */
 
 
 
@@ -153,7 +153,7 @@
   <p>The remainder of this paper is organized as follows.  We introduce the topic of machine learning classification in biological data sets.   We introduce the concepts of feature selection and the importance of regularization.  We briefly introduce the concepts of neural network analysis.  We demonstrate the alterations necessary to transfer a feedforward neural network (FFNN) to a DFS model.  Finally, we present the results we obtained from this study’s data set as well as a set of alternative data sets to determine the quality of the feature selection technique.</p>
   <h3>Classification in Biological Data Sets</h3>
   <p>When referring to classification in a biological sense, we mean taking information about an organism and attempting to determine whether an attribute will end up manifesting in the organism dictating a particular class.  For instance, just looking at the number of chromosomes of a human being you can deterministically say whether or not that human has Down’s Syndrome [2].  In this case, it’s obvious that the classifier would behave as follows:</p>
-  <img src="images/downs.png" style="width:100%;height:auto" alt="">
+  <img src="images/downs.png" style="width:40%;height:auto;margin-left:auto;margin-right:auto;display:block" alt="">
   <p>In this case the feature set is just “number_of_chromosomes” and the class is the presence or absence of Down’s Syndrome.</p>
   <p>The way that these classifiers are created is by exposing a general model to a data set and training it to return a class with the greatest accuracy measure.  To give an example of how this would work, let’s take a closer look at a common classification technique called logistic regression. </p>
   <p>In logistic regression, we are simply trying to determine the probability of two classes based on the inputs (it can be extended to multiple classes but let’s restrict our focus to two for clarity).  The model itself is constructed as follows:</p>
@@ -179,7 +179,7 @@
   <p>
     To provide a little bit more insight into the behavior of this model, a graph of the probability of Down’s Syndrome in response to chromosome count using our logistic regression model is presented in Figure 3.  Even though chromosome count is clearly an integer, this shows the tradeoff as the number of chromosomes transitions from 46 to 47.
   </p>
-  <img src="images/sigmoid.png" style="width:40%;height=auto" alt="">
+  <img src="images/sigmoid.png" style="width:40%;height:auto;margin-left:auto;margin-right:auto;display:block" alt="">
   <h3>Feature Selection and the Importance of Regularization</h3>
   <p>In the previous section we developed a logistic regression model that perfectly classified the existence of down’s syndrome based on the number of chromosomes in the subject.  This was clearly an engineered example since we had all of the information we needed and nothing else before we even started.  Real world data sets are a lot messier and may include information that has nothing to do with the problem.  But how do you identify this?  </p>
   <p>To illustrate, let’s make the Down’s Syndrome data set noisier by adding some additional, superfluous features (Figure 4).</p>
@@ -193,15 +193,17 @@
   <img src="images/weights.png" style="width:10%;height:auto" alt="">
   <p>Now <b><i>W</i></b> <sub>number of chromosomes</sub> is 2,000,000 times larger than <b><i>W</i></b> <sub>age</sub>.  Thus, we can conclude that number of chromosomes is selected by the model and neither age nor age_months is selected by the model.</p>
   <p>It is also worth noting that regularized models tend to be less dramatic.  Figure 5 is the same trade off example as Figure 3 but for the regularized model.  Note that the slope is not as steep as the model transitions from 0 to 1 and only climbs to about 95% confident as the chromosome count tends from 46 to 47.</p>
-  <img src="images/sig_reg.png" style="width:50%;height:auto" alt="">
+  <img src="images/sig_reg.png" style="width:40%;height:auto;margin-left:auto;margin-right:auto;display:block" alt="">
   <p>This provides the general framework for a feature selection model—assign a weight directly to each feature, then minimize both the loss of the model and the weights.  What will be returned is a high quality model and a weight vector that reasonably signifies the importance of each feature in the classification task.</p>
   <h3>A Brief Introduction to Neural Networks</h3>
   <p>In this section we cover only a simple form of neural networks called feedforward neural networks (FFNN).  To introduce the concept let’s look at another concept called a computational graph.  Computational graphs work by having numbers and operations.  So for instance a “+” node sums all of the nodes feeding into it and outputs that sum.  Examples for “2+2 = 4” and “2 + -3 = 1” are provided in Figure 6.</p>
-  <img src="images/comp_graph.png" style="width:20%;height:auto" alt="">
+  <img src="images/comp_graph.png" style="width:auto;height:200px;padding-left:70px;margin-left:auto;margin-right:auto" alt="">
+  <img src="images/fig7.png" style="width:auto;height:200px;padding-left:70px;margin-left:auto;margin-right:auto" alt="">
+  <img src="images/fig8.png" style="width:auto;height:200px;padding-left:70px;margin-left:auto;margin-right:auto" alt="">
+
+
   <p>Typically, rather than straight addition there would be a weight term associated with each link in the graph.  The weight is multiplied by the result of the previous node and fed into the next node.  An example of a weighted computational graph for the equation “2 * 1 + -3 * 2 = -4” is provided in Figure 7.</p>
-  <img src="images/fig7.png" style="width:15%;height:auto" alt="">
   <p>We’re almost there, we just need to make this a non-linear function to transform it to an actual neural network.  One common method of doing this is just by applying a sigmoid to it—perform the weighted sum then use that as the exponent of the sigmoid, just as you would for logistic regression.  Figure 8 is a neural network that does the exact same computation as our logistic regression model developed in Figure 3.</p>
-  <img src="images/fig8.png" style="width:30%;height:auto" alt="">
   <p>There are many other activation functions and experimentation or research is required to determine which fits your problem appropriately.  Other examples of activation functions include rectified linear (relu), hyperbolic tangent, exponential linear unit and many others.</p>
   <p>Now, to illustrate why a neural network is necessary.  Let’s take a look at a non-linear example. This neural network is an example of implementing the XOR function.  The truth table for XOR is provided in Figure 10.</p>
   <img src="images/fig10.png" style="width:30%;height:auto" alt="">
@@ -246,9 +248,7 @@
     </ul>
   </ul>
   <h3>Results</h3>
-  <h4>Cis-non encoding DNA</h4>
-  <p>In the classification task. We intentionally used the same neural network architecture, regularization methods, and lambda1 values to see if we could reproduce their results.  We also did the 0-1 normalization to determine if a different feature importance would be derived through our method.</p>
-
+  <p><b>Click Button to View Results</b></p>
 
   <div class="row" style="padding-left:0px">
     <ul>
@@ -265,8 +265,14 @@
   </div>
 
 
+
+
+
+
 <div>
 <div id="cis_div">
+  <h3>Cis-non encoding DNA</h3>
+  <p>In the classification task. We intentionally used the same neural network architecture, regularization methods, and lambda1 values to see if we could reproduce their results.  We also did the 0-1 normalization to determine if a different feature importance would be derived through our method.</p>
   <svg id="cis_bar_chart" ></svg>
   <div>
     <div id="dataView" style='margin-left:100px;'></div>
@@ -323,7 +329,7 @@
 <br>
 <br>
 <hr>
-
+<div style='display:inline'>
   <p class="p1" style="font-family:times new roman"><strong>References:</strong></p>
 
   <p style="padding-left:50px;font-family:'courier new'">1. Deep Feature Selection: Theory and Application to Identify Enhancers and Promoters
@@ -351,6 +357,9 @@ https://gist.github.com/stewartpark/187895beb89f0a1b3a54</p>
 Ames Housing</p>
 
 <p style="padding-left:50px;font-family:'courier new'">7. UCI</p>
+
+
+</div>
 
 
 
@@ -394,28 +403,43 @@ Ames Housing</p>
     $('#kirc_div').hide();
     $('#luad_div').hide();
     $('#prad_div').hide();
+    return false;
+
 
   })
   $('#brca').click(function(){
     $('#brca_div').show();
+    return false;
   })
   $('#coad').click(function(){
     $('#coad_div').show();
+    return false;
+
   })
   $('#kirc').click(function(){
     $('#kirc_div').show();
+    return false;
+
   })
   $('#luad').click(function(){
     $('#luad_div').show();
+    return false;
+
   })
   $('#prad').click(function(){
     $('#prad_div').show().css("display", "inline");
+    return false;
+
   })
   $('#cis').click(function(){
     $('#cis_div').show().css("display", "inline");
+    return false;
+
   })
   $('#housing').click(function(){
     $('#housing_div').show().css("display", "inline");
+    return false;
+
   })
 
 
