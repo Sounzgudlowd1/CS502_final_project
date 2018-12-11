@@ -14,10 +14,10 @@
 ////////////// DOCUMENT READY
 $(document).ready(function(){
 // SMOOTH-SCROLL
-$(".scroll-smooth").click(function(event){   
-  event.preventDefault();
-  $('html,body').animate({scrollTop:$(this.hash).offset().top}, 700);
-});
+// $(".scroll-smooth").click(function(event){
+//   event.preventDefault();
+//   $('html,body').animate({scrollTop:$(this.hash).offset().top}, 700);
+// });
 // SLIDER-INTRO
 $('#slider-intro').bxSlider({
   speed: 250,
@@ -40,9 +40,9 @@ $('#slider-imac').bxSlider({
 });
 // MIXITUP
   $('#Grid').mixitup();
-// NIVO-LIGHTBOX  
+// NIVO-LIGHTBOX
   $('a.nivoz').nivoLightbox({
-  effect: 'slideUp',  
+  effect: 'slideUp',
 
   });
 
@@ -50,17 +50,17 @@ $('#slider-imac').bxSlider({
   errorMessage: 'The requested content cannot be loaded. Please try again later.',
   effect: 'nonexisent'
   });
-  
+
  });
 // END DOCUMENT READY
 
-// GOOGLE MAPS  
+// GOOGLE MAPS
   function initialize() {
   var myLatlng = new google.maps.LatLng(56.948500,24.108220);
   var mapOptions = {
     zoom:16,
     center: myLatlng,
-    scrollwheel: false  
+    scrollwheel: false
 
   }
   var map = new google.maps.Map(document.getElementById('map-canvas'), mapOptions);
@@ -70,22 +70,22 @@ $('#slider-imac').bxSlider({
       title: 'Hello World!'
   });
 }
-google.maps.event.addDomListener(window, 'load', initialize);  
+google.maps.event.addDomListener(window, 'load', initialize);
 
 
 // CONTACT
 $(document).ready(function(){
-  
+
   $('form#ajax_form .submit').click(function(){
 
     $('#ajax_form .error').hide();  //if error visibile, hide on new click
-    
+
     var name = $('input#name').val();
     if (name == "" || name == " " || name == "Name") {
         $('input#name').focus().before('<div class="error">Please enter your name.</div>');
         return false;
     }
-    
+
     var email_test = /^([a-z0-9_\.-]+)@([\da-z\.-]+)\.([a-z\.]{2,6})$/;
     var email = $('input#email').val();
     if (email == "" || email == " ") {
@@ -95,13 +95,13 @@ $(document).ready(function(){
        $('input#email').select().before('<div class="error">Email address might be wrong.</div>');
        return false;
     }
-    
+
     var message = $('#message').val();
     if (message == "" || message == " " || message == "Message") {
         $('#message').focus().fadeIn('slow').before('<div class="error">Please enter your message.</div>');
         return false;
     }
-    
+
     var data_string = $('form#ajax_form').serialize();
 
     $.ajax({
@@ -122,7 +122,7 @@ $(document).ready(function(){
 
 
   }) //end click function
-  
+
   var current_data = new Array();
 
   $('.clear').each(function(i){

@@ -1,16 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
+
   <!-- header -->
   <% include ./_header %>
 
   <!-- NAVBAR-->
   <% include ./_nav %>
+
   <% include ./_js_partials %>
 
-
-  <!--===============================================================-->
-
-  <!-- INTRO-->
 
   <script src="http://d3js.org/d3.v3.js"></script>
 
@@ -144,135 +142,283 @@
   </style>
 
   <body data-spy="scroll" data-target=".scroll-bootstrap" data-offset="50">
-    <div style="padding:20px;padding-top:100px;">
+
+<div style="padding:20px;padding-top:100px;"></div>
+<div class="main" style="padding-left:50px">
+  <h3>INTRODUCTION</h3>
+  <p>All throughout biology there are differences among organisms.  Does the organism have a certain color of hair?  Did the organism get a certain type of disease? Did the organism have a specific defect—6 fingers per hand, missing a limb at birth, etc.?  These trait differences can be considered the “class” of the organism and whatever attributes of the organism determine its class (DNA sequence, phenotypic characteristics, etc.) can be considered the “features” of the organism.  This problem formulation naturally lends itself to classification techniques from machine learning.  The general structure of a supervised machine learning model is to learn a function that maps an input X to an output y.  In this context, we therefore have organism features X and the type of condition present in the organism y.
+  </p>
+  <p>This project is based on [1].  In this paper, the authors present a method called Deep Feature Selection (DFS), where a neural network is used for a classification but an additional layer is used for feature analysis.  After analysis of this paper we believe that these techniques could apply to a broader range of classification and even regression tasks than previously evaluated.  We evaluate the methods of the paper, use the same technique on new data sets and evaluate the results obtained.
+  </p>
+  <p>The remainder of this paper is organized as follows.  We introduce the topic of machine learning classification in biological data sets.   We introduce the concepts of feature selection and the importance of regularization.  We briefly introduce the concepts of neural network analysis.  We demonstrate the alterations necessary to transfer a feedforward neural network (FFNN) to a DFS model.  Finally, we present the results we obtained from this study’s data set as well as a set of alternative data sets to determine the quality of the feature selection technique.</p>
+  <h3>Classification in Biological Data Sets</h3>
+  <p>When referring to classification in a biological sense, we mean taking information about an organism and attempting to determine whether an attribute will end up manifesting in the organism dictating a particular class.  For instance, just looking at the number of chromosomes of a human being you can deterministically say whether or not that human has Down’s Syndrome [2].  In this case, it’s obvious that the classifier would behave as follows:</p>
+  <img src="images/downs.png" style="width:100%;height:auto" alt="">
+  <p>In this case the feature set is just “number_of_chromosomes” and the class is the presence or absence of Down’s Syndrome.</p>
+  <p>The way that these classifiers are created is by exposing a general model to a data set and training it to return a class with the greatest accuracy measure.  To give an example of how this would work, let’s take a closer look at a common classification technique called logistic regression. </p>
+  <p>In logistic regression, we are simply trying to determine the probability of two classes based on the inputs (it can be extended to multiple classes but let’s restrict our focus to two for clarity).  The model itself is constructed as follows:</p>
+  <p>1/(1 + e^-(WX + b)) = sigmoid(WX + b)</p>
+  <p>Where W is a vector of weights, X is the set of input features and b is a bias term.  This function is called a sigmoid function.  Let’s train a logistic regression model to learn our Down’s Syndrome example.  An artificial data set for this example is presented in Figure 2.</p>
+  <p>Our model only has two parameters in this case, W1 (a multiplier for the number of chromosomes) and b a bias term.  X also only has one element, which is the number of chromosomes.  So the entire model is:</p>
+  <p>1/(1 + e^-(W1 * Number_Of_Chromosomes + b))</p>
+  <p>Our task is to dial in W1 and b such that the above function outputs a number close to 1 when the number of chromosomes is 47 and a number close to 0 when the number of chromosomes is 46 for the above data set.  To accomplish this we need to define a loss function—that is a measure of how poorly the model is performing.  Then we need to manipulate W1 and b in such a way that the loss function is minimized.  Typically the loss function in logistic regression is cross entropy which works as follows[3]:</p>
+  <p>If the actual label is positive (i.e. exhibits Down’s Syndrome) then:</p>
+  <p>	-log(sigmoid(WX + b))</p>
+  <p>Else:</p>
+  <p>	-log(1 – sigmoid(WX + b))</p>
+
+  <p>Thus the objective function across all data points becomes:</p>
+  <img src="images/equation.png" style="width:40%;height:auto" alt="">
+
+  <p>These parameters are tuned using an optimization algorithm such as stochastic gradient descent.  We applied this algorithm to the above data and model.  After optimization (and constraining all terms to +/-1000), the parameters found for the above problem are W1 = 21.5 and b = -1000.  With this model the probability of Down’s Syndrome given 47 chromosomes can be calculated as:</p>
+  <p><b>1/(1 + e^-(47 * -21.5 + 1000) ) = 0.99997</b></p>
+  <p>And the probability of having Down’s Syndrome given that the subject has 46 chromosomes is:</p>
+  <p><b>1/(1 + e^-(46 * -21.5 + 1000) ) = 1.7 * 10 ^ -5</b></p>
+  <p>Any time the probability is above 0.5, the True class is outputted and any time it is below 0.5 the False class is outputted.  So, this model is exactly equivalent to the pseudo code presented in Figure 1.
+  </p>
+  <p>
+    To provide a little bit more insight into the behavior of this model, a graph of the probability of Down’s Syndrome in response to chromosome count using our logistic regression model is presented in Figure 3.  Even though chromosome count is clearly an integer, this shows the tradeoff as the number of chromosomes transitions from 46 to 47.
+  </p>
+  <img src="images/sigmoid.png" style="width:40%;height=auto" alt="">
+  <h3>Feature Selection and the Importance of Regularization</h3>
+  <p>In the previous section we developed a logistic regression model that perfectly classified the existence of down’s syndrome based on the number of chromosomes in the subject.  This was clearly an engineered example since we had all of the information we needed and nothing else before we even started.  Real world data sets are a lot messier and may include information that has nothing to do with the problem.  But how do you identify this?  </p>
+  <p>To illustrate, let’s make the Down’s Syndrome data set noisier by adding some additional, superfluous features (Figure 4).</p>
+
+  <img src="downs2.png" style="width:40%;height=auto" alt="">
+  <p>Now, we already know that the hypothesis sigmoid( -21.5 * number_of_chromosomes + 1000) does a perfect job of classification.  What about sigmoid(12,000 * age – 1000 * age_months – 21.5 number_of_chromosomes + 1000)?  Since, the 12,000 * age cancels with the -1000 * age_months this also does a perfect job!  Worse yet, the weight associated with age is 12,000 and the weight associated with age_months is -1,000.  The intuition that you obtain from looking at the weights is that age is around 60 times as important as the number of chromosomes!  This is where the concept of feature selection comes in.  We need a systematic method to look at the above model and ensure that only the feature number_of_chromosomes is selected.</p>
+  <p>So, let’s perform a technique called regularization.  The goal of regularization is to dissuade your model from learning a highly complicated hypothesis.  In this case we want to discourage the model from assigning weights of 12,000 and -1,000 to the features age and age_months respectively.  To do this we just need to alter the loss function of the model by adding a term associated with the magnitude of the weights to it.  More formally the new loss function can be defined as follows:</p>
+  <img src="images/equation2.png" style="width:20%;height:auto" alt="">
+
+  <p>Where loss is the original cost function, || is the absolute value operator, <img src="images/param.png" style="width:20px;height:auto" alt="">   is a tradeoff parameter and <img src="images/wk.png" style="width:20px;height:auto" alt=""> is the kth term in the weight vector W.  This minimizes both the error of the model and the absolute value of the model’s terms.  With a <img src="images/param.png" style="width:20px;height:auto" alt=""> value of just 0.01 we obtain the following weights:</p>
+  <img src="images/weights.png" style="width:10%;height:auto" alt="">
+  <p>Now <b><i>W</i></b> <sub>number of chromosomes</sub> is 2,000,000 times larger than <b><i>W</i></b> <sub>age</sub>.  Thus, we can conclude that number of chromosomes is selected by the model and neither age nor age_months is selected by the model.</p>
+  <p>It is also worth noting that regularized models tend to be less dramatic.  Figure 5 is the same trade off example as Figure 3 but for the regularized model.  Note that the slope is not as steep as the model transitions from 0 to 1 and only climbs to about 95% confident as the chromosome count tends from 46 to 47.</p>
+  <img src="images/sig_reg.png" style="width:50%;height:auto" alt="">
+  <p>This provides the general framework for a feature selection model—assign a weight directly to each feature, then minimize both the loss of the model and the weights.  What will be returned is a high quality model and a weight vector that reasonably signifies the importance of each feature in the classification task.</p>
+  <h3>A Brief Introduction to Neural Networks</h3>
+  <p>In this section we cover only a simple form of neural networks called feedforward neural networks (FFNN).  To introduce the concept let’s look at another concept called a computational graph.  Computational graphs work by having numbers and operations.  So for instance a “+” node sums all of the nodes feeding into it and outputs that sum.  Examples for “2+2 = 4” and “2 + -3 = 1” are provided in Figure 6.</p>
+  <img src="images/comp_graph.png" style="width:20%;height:auto" alt="">
+  <p>Typically, rather than straight addition there would be a weight term associated with each link in the graph.  The weight is multiplied by the result of the previous node and fed into the next node.  An example of a weighted computational graph for the equation “2 * 1 + -3 * 2 = -4” is provided in Figure 7.</p>
+  <img src="images/fig7.png" style="width:15%;height:auto" alt="">
+  <p>We’re almost there, we just need to make this a non-linear function to transform it to an actual neural network.  One common method of doing this is just by applying a sigmoid to it—perform the weighted sum then use that as the exponent of the sigmoid, just as you would for logistic regression.  Figure 8 is a neural network that does the exact same computation as our logistic regression model developed in Figure 3.</p>
+  <img src="images/fig8.png" style="width:30%;height:auto" alt="">
+  <p>There are many other activation functions and experimentation or research is required to determine which fits your problem appropriately.  Other examples of activation functions include rectified linear (relu), hyperbolic tangent, exponential linear unit and many others.</p>
+  <p>Now, to illustrate why a neural network is necessary.  Let’s take a look at a non-linear example. This neural network is an example of implementing the XOR function.  The truth table for XOR is provided in Figure 10.</p>
+  <img src="images/fig10.png" style="width:30%;height:auto" alt="">
+  <img src="images/fig11.png" style="width:30%;height:auto" alt="">
+  <p>Walking through the computation in figure 11, if x1 and x2 are both zero or both one, then the hidden nodes, H1 and H2, receive a signal of 0 from the input layer.  Then the bias term of -5 is added to each.  So the output of both H1 and H2 are very small since sigmoid(-5) is near 0.  The small output from each is multiplied by 10 then summed then 5 is subtracted.  Again this results in a very small signal.  Thus the output would be less than 0.5 and the label would be 0 (or False).</p>
+  <p>Conversely, suppose X1 is 1 and X2 is 0.  Then H1 will receive a signal of 10, H2 will receive a signal of 0.  This will cause the output of H1 to be near 1 and the output of H2 to be near 0 (again since sigmoid(5) ~= 1 and sigmoid(-5) ~= 0).  The high output from H1 and the near zero output from H2 will be multiplied by 10 and summed and 5 will be subtracted.  Thus the output will be roughly sigmoid(5) which is near 1 and the label would be 1 (or True) if only one of X1 and X2 is 1. </p>
+  <p>Training for neural networks works similarly to logistic regression and involves the use of a solver such as stochastic gradient descent or adagrad.</p>
+  <p>This section only described the simple case of feedforward neural networks.  There are other types that are used for other applications.  Many of them have features in common but this version is probably the easiest to conceptualize and the one used for the this paper.</p>
+  <h3>Transforming Feedforward Neural Networks to Deep Feature Selection</h3>
+  <p>Neural networks are notorious for being a “black box.”  Once the weights are learned it is often quite difficult to determine why it is outputting the correct label even though it often is.  From the example provided in Figure 11, it probably wasn’t immediately obvious at first glance what the network was computing for instance.  Realistically neural networks can have several layers of nodes each with 1000+ nodes.  They are fully connected to one another so there end up being literally millions of weights and bias terms in some cases.  So we need a method to extract the features that the neural network used.  This model is presented in [1].  The concept is actually pleasantly simple—take a neural network and simply interrupt the input layer by multiplying by a scalar.  This allows the training to learn a weight that only applies to one feature.  A pictorial representation is provided in Figures 12 A and B.  Figure 12A is a standard feed forward neural net, figure b has the input multiplied by a scalar to produce a DFS model. </p>
+  <img src="images/fig12.png" style="width:50%;height:auto" alt="">
+
+  <h3>Importance of Feature Normalization</h3>
+  <p>So far we have developed a method of allowing a neural network to train itself to fit a problem AND weight the input features.  This is very close!  However, what if one feature simply has a really high magnitude in comparison to others?  Concretely, suppose that you are predicting housing prices you have the features “square_footage” and “has_garage.”  One indicating the total square footage of the house, probably on a scale of around 500 to 10,000 and a Boolean value of has garage with a scale of 0 to 1.  Simply due to the fact that the square_footage is much larger in magnitude it will have a lower weight than has_garage because it doesn’t need as large of a multiplier to enter the neural network meaningfully.  </p>
+  <p>To illustrate, consider our XOR example.  Clearly, both features are equally important (and therefore should be equally weighted).  However suppose that X2 was scaled 0-10 instead of 0-1.  The revised truth table is provided in Figure 13.  The feature weights that fully learn this version of XOR are provided in Figure 14.</p>
+  <img src="images/fig13.png" style="width:30%;height:auto" alt="">
+  <img src="images/fig14.png" style="width:30%;height:auto" alt="">
+  <p>Chart A show the input layer weights learned for the XOR task with the magnitude of X2 on a scale of 0-10.  Figure B shows the input layer weights with X2 on a scale of 0-1.  Clearly, they are both important in the classification task of XOR, so figure B complies with intuition about the model and figure A misreports the importance of each feature.</p>
+  <p>To combat this phenomenon, we simply applied 0-1 scaling by applying the following transformation to all data sets evaluated:</p>
+  <p><b>Xij = (Xij – min(Xi)) /(max(Xi) – min(Xi))</b></p>
+  <p>For the jth entry in the ith column.</p>
+  <h3>Model Summary</h3>
+  <p>To summarize, this model is simply a neural network that behaves as a set of inter connected logistic regression units.  The model is further enhanced by adding a one to one input layer and regularizing all non-bias terms.  It is also extremely important to ensure that the scale of the features is consistent. This study uses a  scale of 0 to 1, however as long as features are scaled consistently the model should return meaningful weights.</p>
+  <h3>Data Sets</h3>
+  <p>The purpose of this project was to evaluate this classification/regression method on a variety of data sets to determine if it was capable of revealing new intuition about the problem.  We intentionally organized our data to move from having ground truth and validating intuition to brand new problems that have not been addressed in this manner previously.  So the data sets included were:</p>
+  <ul>
+    <li style="list-style-type:circle">The cis-non encoding DNA set form [1].  Simply to reproduce their results and test the effect of our 0-1 normalization enhancement.</li>
+    <ul>
+      <li style="list-style-type:square">There were 20,878 examples in this data set with 102 features.  There were 3 classes reported by the authors with main classes of active promoter, active enhancer and all other classes in the data set were considered background. </li>
+    </ul>
+    <li style="list-style-type:circle">Housing price predictions for Ames, IA [6]</li>
+    <ul>
+      <li style="list-style-type:square">This data set was included because features of housing are familiar to many people across many domains. We wanted to see if the model could simultaneously learn the housing prices and report back features of housing that comply with our intuition about the housing market.</li>
+    </ul>
+    <li style="list-style-type:circle">Baboon sensor data collected from the University of Illinois at Chicago’s computational biology department. </li>
+    <ul>
+      <li style="list-style-type:square">The goal of this project is to determine if the baboon is sedentary or walking/running. Intuitively, any  sensor data associated with change in position with respect to time should indicate that the baboon is in motion.</li>
+    </ul>
+    <li style="list-style-type:circle">Prediction of cancer from RNA gene sequences from the University of California Irvine’s data sets[7]</li>
+    <ul>
+      <li style="list-style-type:square">We have no ground truth here but wanted to see if the classifier would be strong enough to identify regions of genes that contribute most substantially to the existence or non-existence of certain types of cancer.</li>
+    </ul>
+  </ul>
+  <h3>Results</h3>
+  <h4>Cis-non encoding DNA</h4>
+  <p>In the classification task. We intentionally used the same neural network architecture, regularization methods, and lambda1 values to see if we could reproduce their results.  We also did the 0-1 normalization to determine if a different feature importance would be derived through our method.</p>
 
 
-      <a href="dfs_app" class="btn btn-flat">Go to DFS App</a>
-    </div>
-      <div class="row" style="padding-left:0px">
-        <ul>
-          <li><a id="reset" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">REMOVE CHARTS</a></li>
-          <li><a id="brca" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-BRCA</a></li>
-          <li><a id="coad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-COAD</a></li>
-          <li><a id="kirc" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-KIRC</a></li>
-          <li><a id="luad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-LUAD</a></li>
-          <li><a id="prad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-PRAD</a></li>
-          <li><a id="cis" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">DNA-CIS</a></li>
-          <li><a id="housing" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">HOUSING</a></li>
-        </ul>
+  <div class="row" style="padding-left:0px">
+    <ul>
+      <li><a id="reset" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">REMOVE CHARTS</a></li>
+      <li><a id="brca" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-BRCA</a></li>
+      <li><a id="coad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-COAD</a></li>
+      <li><a id="kirc" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-KIRC</a></li>
+      <li><a id="luad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-LUAD</a></li>
+      <li><a id="prad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-PRAD</a></li>
+      <li><a id="cis" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">DNA-CIS</a></li>
+      <li><a id="housing" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">HOUSING</a></li>
+    </ul>
 
-      </div>
+  </div>
 
 
-    <div>
-      <div id="cis_div">
-        <svg id="cis_bar_chart" ></svg>
-        <div>
-          <div id="dataView" style='margin-left:100px;'></div>
-          <div id="confusion_matrix"></div>
-        </div>
-      </div>
-      <div id="brca_div">
-        <svg id="brca_bar_chart"></svg>
-        <div>
-          <div id="dataView_brca" style='margin-left:100px;'></div>
-          <div id="confusion_matrix_brca"></div>
-        </div>
-      </div>
-      <div id='coad_div'>
-        <svg id="coad_bar_chart"></svg>
-        <div>
-          <div id="dataView_coad" style='margin-left:100px;'></div>
-          <div id="confusion_matrix_coad"></div>
-        </div>
-      </div>
+<div>
+<div id="cis_div">
+  <svg id="cis_bar_chart" ></svg>
+  <div>
+    <div id="dataView" style='margin-left:100px;'></div>
+    <div id="confusion_matrix"></div>
+  </div>
+</div>
+<div id="brca_div">
+  <svg id="brca_bar_chart"></svg>
+  <div>
+    <div id="dataView_brca" style='margin-left:100px;'></div>
+    <div id="confusion_matrix_brca"></div>
+  </div>
+</div>
+<div id='coad_div'>
+  <svg id="coad_bar_chart"></svg>
+  <div>
+    <div id="dataView_coad" style='margin-left:100px;'></div>
+    <div id="confusion_matrix_coad"></div>
+  </div>
+</div>
 
-      <div id='kirc_div'>
-        <svg id="kirc_bar_chart"></svg>
-        <div>
-          <div id="dataView_kirc" style='margin-left:100px;'></div>
-          <div id="confusion_matrix_kirc"></div>
-        </div>
-      </div>
-      <div id='luad_div'>
-        <svg id="luad_bar_chart"></svg>
-        <div>
-          <div id="dataView_laud" style='margin-left:100px;'></div>
-          <div id="confusion_matrix_laud"></div>
-        </div>
-      </div>
+<div id='kirc_div'>
+  <svg id="kirc_bar_chart"></svg>
+  <div>
+    <div id="dataView_kirc" style='margin-left:100px;'></div>
+    <div id="confusion_matrix_kirc"></div>
+  </div>
+</div>
+<div id='luad_div'>
+  <svg id="luad_bar_chart"></svg>
+  <div>
+    <div id="dataView_laud" style='margin-left:100px;'></div>
+    <div id="confusion_matrix_laud"></div>
+  </div>
+</div>
 
-      <div id='prad_div'>
-        <svg id="prad_bar_chart"></svg>
-        <div>
-          <div id="dataView_prad" style='margin-left:100px;'></div>
-          <div id="confusion_matrix_prad"></div>
-        </div>
-      </div>
+<div id='prad_div'>
+  <svg id="prad_bar_chart"></svg>
+  <div>
+    <div id="dataView_prad" style='margin-left:100px;'></div>
+    <div id="confusion_matrix_prad"></div>
+  </div>
+</div>
 
-      <div id="housing_div">
-        <svg id="housing_bar_chart" style="height:350"></svg>
-        <div>
-          <div id="housing_scat"></div>
-        </div>
-      </div>
+<div id="housing_div">
+  <svg id="housing_bar_chart" style="height:350"></svg>
+  <div>
+    <div id="housing_scat"></div>
+  </div>
+</div>
 
+<br>
+<br>
+<br>
+<br>
+<hr>
 
-    </div>
+  <p class="p1" style="font-family:times new roman"><strong>References:</strong></p>
 
-  </body>
-  <script src='javascripts/scatterplot.js'></script>
-  <script src='javascripts/barchart.js'></script>
-  <script src='javascripts/rna_barchart_brca.js'></script>
-  <script src='javascripts/rna_barchart_coad.js'></script>
-  <script src='javascripts/rna_barchart_kirc.js'></script>
-  <script src='javascripts/rna_barchart_luad.js'></script>
-  <script src='javascripts/rna_barchart_prad.js'></script>
-  <script src='javascripts/housing_barchart.js'></script>
-  <script src='javascripts/confusion_matrix_cis.js'></script>
-  <script src='javascripts/confusion_matrix_brca.js'></script>
-  <script src='javascripts/confusion_matrix_coad.js'></script>
-  <script src='javascripts/confusion_matrix_kirc.js'></script>
-  <script src='javascripts/confusion_matrix_luad.js'></script>
-  <script src='javascripts/confusion_matrix_prad.js'></script>
-  <script type="text/javascript">
-    // (funciton(){
-    //
-    // }
-    $('#reset').click(function(){
-      $('#cis_div').hide();
-      $('#housing_div').hide();
+  <p style="padding-left:50px;font-family:'courier new'">1. Deep Feature Selection: Theory and Application to Identify Enhancers and Promoters
+  YIFENG LI, CHIH-YU CHEN, and WYETH W. WASSERMAN, JOURNAL OF COMPUTATIONAL BIOLOGY</p>
+  <p style="padding-left:50px;font-family:'courier new'">Volume 23, Number 5, 2016 <br>
+  # Mary Ann Liebert, Inc. <br>
+  Pp. 322–336 <br>
+  DOI: 10.1089/cmb.2015.0189</p>
+  <p style="padding-left:50px;font-family:'courier new'">2.
+  https://www.ndss.org/about-down-syndrome/down-syndrome/
+</p>
 
-      $('#brca_div').hide();
-      $('#coad_div').hide();
-      $('#kirc_div').hide();
-      $('#luad_div').hide();
-      $('#prad_div').hide();
+<p style="padding-left:50px;font-family:'courier new'">3.
+https://ml-cheatsheet.readthedocs.io/en/latest/logistic_regression.html
+</p>
 
-    })
-    $('#brca').click(function(){
-      $('#brca_div').show();
-    })
-    $('#coad').click(function(){
-      $('#coad_div').show();
-    })
-    $('#kirc').click(function(){
-      $('#kirc_div').show();
-    })
-    $('#luad').click(function(){
-      $('#luad_div').show();
-    })
-    $('#prad').click(function(){
-      $('#prad_div').show().css("display", "inline");
-    })
-    $('#cis').click(function(){
-      $('#cis_div').show().css("display", "inline");
-    })
-    $('#housing').click(function(){
-      $('#housing_div').show().css("display", "inline");
-    })
+<p style="padding-left:50px;font-family:'courier new'">4.
+ML BOOK
+</p>
+
+<p style="padding-left:50px;font-family:'courier new'">5.
+https://gist.github.com/stewartpark/187895beb89f0a1b3a54</p>
+
+<p style="padding-left:50px;font-family:'courier new'">6.
+Ames Housing</p>
+
+<p style="padding-left:50px;font-family:'courier new'">7. UCI</p>
 
 
-  </script>
+
+
+
+
+
+
+</div>
+</div>
+
+
+
+</body>
+
+<script src='javascripts/scatterplot.js'></script>
+<script src='javascripts/barchart.js'></script>
+<script src='javascripts/rna_barchart_brca.js'></script>
+<script src='javascripts/rna_barchart_coad.js'></script>
+<script src='javascripts/rna_barchart_kirc.js'></script>
+<script src='javascripts/rna_barchart_luad.js'></script>
+<script src='javascripts/rna_barchart_prad.js'></script>
+<script src='javascripts/housing_barchart.js'></script>
+<script src='javascripts/confusion_matrix_cis.js'></script>
+<script src='javascripts/confusion_matrix_brca.js'></script>
+<script src='javascripts/confusion_matrix_coad.js'></script>
+<script src='javascripts/confusion_matrix_kirc.js'></script>
+<script src='javascripts/confusion_matrix_luad.js'></script>
+<script src='javascripts/confusion_matrix_prad.js'></script>
+
+<script type="text/javascript">
+  // (funciton(){
+  //
+  // }
+  $('#reset').click(function(){
+    $('#cis_div').hide();
+    $('#housing_div').hide();
+
+    $('#brca_div').hide();
+    $('#coad_div').hide();
+    $('#kirc_div').hide();
+    $('#luad_div').hide();
+    $('#prad_div').hide();
+
+  })
+  $('#brca').click(function(){
+    $('#brca_div').show();
+  })
+  $('#coad').click(function(){
+    $('#coad_div').show();
+  })
+  $('#kirc').click(function(){
+    $('#kirc_div').show();
+  })
+  $('#luad').click(function(){
+    $('#luad_div').show();
+  })
+  $('#prad').click(function(){
+    $('#prad_div').show().css("display", "inline");
+  })
+  $('#cis').click(function(){
+    $('#cis_div').show().css("display", "inline");
+  })
+  $('#housing').click(function(){
+    $('#housing_div').show().css("display", "inline");
+  })
+
+
+</script>
 
 </html>

@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<html lang="en">
+  <!-- header -->
+  <% include ./_header %>
+
+  <!-- NAVBAR-->
+  <!-- <% include ./_js_partials %> -->
+
+  <% include ./_nav %>
+
+  <!--===============================================================-->
+
+  <!-- INTRO-->
+
+  <script src="http://d3js.org/d3.v3.js"></script>
+
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/4.10.0/d3.min.js"></script> -->
+  <!-- <script src="javascripts/heatmap.js"></script> -->
+
+  <style>
+  rect.bordered {
+    stroke: #E6E6E6;
+    stroke-width:2px;
+  }
+
+  text.mono {
+    font-size: 7pt;
+    font-family: Consolas, courier;
+  }
+
+  text.axis-workweek {
+    fill: #000;
+  }
+
+  text.axis-worktime {
+    fill: #000;
+  }
+
+  .axis text {
+      font: 10px sans-serif;
+      fill:black;
+  }
+
+  .axis line, .axis path {
+      fill: none;
+      stroke: black;
+      shape-rendering: crispEdges;
+  }
+
+  td, th, tr {
+      padding: 4px;
+      border: 1px solid black;
+  }
+
+  table{
+      border-collapse: collapse;
+  }
+
+  #dataView{
+    margin-top:50px;
+    margin-bottom: 20px;
+    float:top;
+  }
+  #dataView_prad{
+    margin-top:50px;
+    margin-bottom: 20px;
+    float:top;
+  }
+
+  .chart_selection{
+    display: block;
+  }
+
+  #_bar_chart{
+    /* display: none; */
+    float:left;
+
+  }
+  #brca_bar_chart{
+    /* display: none; */
+    float:left;
+
+  }
+  #coad_bar_chart{
+    /* display: none; */
+    float:left;
+
+  }
+  #prad_bar_chart{
+    /* display: none; */
+    float:left;
+
+  }
+  #luad_bar_chart{
+    /* display: none; */
+    float:left;
+
+  }
+  #kirc_bar_chart{
+    /* display: none; */
+    float:left;
+
+  }
+  #cis_bar_chart{
+    /* display: none; */
+    float:left;
+  }
+  #housing_bar_chart{
+    /* display: none; */
+    float:left;
+  }
+  #cis_div{
+    display: none;
+  }
+  #brca_div{
+    display: none;
+  }
+  #prad_div{
+    display: none;
+  }
+  #coad_div{
+    display: none;
+  }
+
+  #luad_div{
+    display: none;
+  }
+  #kirc_div{
+    display: none;
+  }
+  #housing_div{
+    display: none;
+  }
+
+  #confusion_matrix{
+    float:left;
+  }
+  #confusion_matrix_prad{
+    float:left;
+  }
+
+
+
+  </style>
+
+  <body data-spy="scroll" data-target=".scroll-bootstrap" data-offset="50">
+
+
+    <div style="padding:20px;padding-top:100px;"></div>
+      <div class="row" style="padding-left:0px">
+        <ul>
+          <li><a id="reset" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">REMOVE CHARTS</a></li>
+          <li><a id="brca" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-BRCA</a></li>
+          <li><a id="coad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-COAD</a></li>
+          <li><a id="kirc" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-KIRC</a></li>
+          <li><a id="luad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-LUAD</a></li>
+          <li><a id="prad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-PRAD</a></li>
+          <li><a id="cis" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">DNA-CIS</a></li>
+          <li><a id="housing" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">HOUSING</a></li>
+        </ul>
+
+      </div>
+
+
+    <div>
+      <div id="cis_div">
+        <svg id="cis_bar_chart" ></svg>
+        <div>
+          <div id="dataView" style='margin-left:100px;'></div>
+          <div id="confusion_matrix"></div>
+        </div>
+      </div>
+      <div id="brca_div">
+        <svg id="brca_bar_chart"></svg>
+        <div>
+          <div id="dataView_brca" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_brca"></div>
+        </div>
+      </div>
+      <div id='coad_div'>
+        <svg id="coad_bar_chart"></svg>
+        <div>
+          <div id="dataView_coad" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_coad"></div>
+        </div>
+      </div>
+
+      <div id='kirc_div'>
+        <svg id="kirc_bar_chart"></svg>
+        <div>
+          <div id="dataView_kirc" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_kirc"></div>
+        </div>
+      </div>
+      <div id='luad_div'>
+        <svg id="luad_bar_chart"></svg>
+        <div>
+          <div id="dataView_laud" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_laud"></div>
+        </div>
+      </div>
+
+      <div id='prad_div'>
+        <svg id="prad_bar_chart"></svg>
+        <div>
+          <div id="dataView_prad" style='margin-left:100px;'></div>
+          <div id="confusion_matrix_prad"></div>
+        </div>
+      </div>
+
+      <div id="housing_div">
+        <svg id="housing_bar_chart" style="height:350"></svg>
+        <div>
+          <div id="housing_scat"></div>
+        </div>
+      </div>
+
+    </div>
+  </body>
+  <script src='javascripts/scatterplot.js'></script>
+  <script src='javascripts/barchart.js'></script>
+  <script src='javascripts/rna_barchart_brca.js'></script>
+  <script src='javascripts/rna_barchart_coad.js'></script>
+  <script src='javascripts/rna_barchart_kirc.js'></script>
+  <script src='javascripts/rna_barchart_luad.js'></script>
+  <script src='javascripts/rna_barchart_prad.js'></script>
+  <script src='javascripts/housing_barchart.js'></script>
+  <script src='javascripts/confusion_matrix_cis.js'></script>
+  <script src='javascripts/confusion_matrix_brca.js'></script>
+  <script src='javascripts/confusion_matrix_coad.js'></script>
+  <script src='javascripts/confusion_matrix_kirc.js'></script>
+  <script src='javascripts/confusion_matrix_luad.js'></script>
+  <script src='javascripts/confusion_matrix_prad.js'></script>
+  <script type="text/javascript">
+    // (funciton(){
+    //
+    // }
+    $('#reset').click(function(){
+      $('#cis_div').hide();
+      $('#housing_div').hide();
+
+      $('#brca_div').hide();
+      $('#coad_div').hide();
+      $('#kirc_div').hide();
+      $('#luad_div').hide();
+      $('#prad_div').hide();
+
+    })
+    $('#brca').click(function(){
+      $('#brca_div').show();
+    })
+    $('#coad').click(function(){
+      $('#coad_div').show();
+    })
+    $('#kirc').click(function(){
+      $('#kirc_div').show();
+    })
+    $('#luad').click(function(){
+      $('#luad_div').show();
+    })
+    $('#prad').click(function(){
+      $('#prad_div').show().css("display", "inline");
+    })
+    $('#cis').click(function(){
+      $('#cis_div').show().css("display", "inline");
+    })
+    $('#housing').click(function(){
+      $('#housing_div').show().css("display", "inline");
+    })
+
+
+  </script>
+
+</html>
