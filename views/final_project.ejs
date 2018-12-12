@@ -219,7 +219,7 @@
   <p>Training for neural networks works similarly to logistic regression and involves the use of a solver such as stochastic gradient descent or adagrad.</p>
   <p>This section only described the simple case of feedforward neural networks.  There are other types that are used for other applications.  Many of them have features in common but this version is probably the easiest to conceptualize and the one used for the this paper.</p>
   <h3>Transforming Feedforward Neural Networks to Deep Feature Selection</h3>
-  <p>Neural networks are notorious for being a “black box.”  Once the weights are learned it is often quite difficult to determine why it is outputting the correct label even though it often is.  From the example provided in Figure 11, it probably wasn’t immediately obvious at first glance what the network was computing for instance.  Realistically neural networks can have several layers of nodes each with 1000+ nodes.  They are fully connected to one another so there end up being literally millions of weights and bias terms in some cases.  So we need a method to extract the features that the neural network used.  This model is presented in [1].  The concept is actually pleasantly simple—take a neural network and simply interrupt the input layer by multiplying by a scalar.  This allows the training to learn a weight that only applies to one feature.  A pictorial representation is provided in Figures 12 A and B.  Figure 12A is a standard feed forward neural net, figure b has the input multiplied by a scalar to produce a DFS model. </p>
+  <p>Neural networks are notorious for being a “black box.”  Once the weights are learned it is often quite difficult to determine why it is outputting the correct label even though it often is.  From the example provided in Figure 11, it probably wasn’t immediately obvious at first glance what the network was computing for instance.  Realistically neural networks can have several lasyers of nodes each with 1000+ nodes.  They are fully connected to one another so there end up being literally millions of weights and bias terms in some cases.  So we need a method to extract the features that the neural network used.  This model is presented in [1].  The concept is actually pleasantly simple—take a neural network and simply interrupt the input layer by multiplying by a scalar.  This allows the training to learn a weight that only applies to one feature.  A pictorial representation is provided in Figures 12 A and B.  Figure 12A is a standard feed forward neural net, figure b has the input multiplied by a scalar to produce a DFS model. </p>
   <img src="images/fig12.png" style="width:50%;height:auto;margin-left:auto;margin-right:auto;display:block" alt="">
 
   <h3>Importance of Feature Normalization</h3>
@@ -244,10 +244,6 @@
     <ul>
       <li style="list-style-type:square">This data set was included because features of housing are familiar to many people across many domains. We wanted to see if the model could simultaneously learn the housing prices and report back features of housing that comply with our intuition about the housing market.</li>
     </ul>
-    <li style="list-style-type:circle">Baboon sensor data collected from the University of Illinois at Chicago’s computational biology department. </li>
-    <ul>
-      <li style="list-style-type:square">The goal of this project is to determine if the baboon is sedentary or walking/running. Intuitively, any  sensor data associated with change in position with respect to time should indicate that the baboon is in motion.</li>
-    </ul>
     <li style="list-style-type:circle">Prediction of cancer from RNA gene sequences from the University of California Irvine’s data sets[7]</li>
     <ul>
       <li style="list-style-type:square">We have no ground truth here but wanted to see if the classifier would be strong enough to identify regions of genes that contribute most substantially to the existence or non-existence of certain types of cancer.</li>
@@ -265,19 +261,20 @@
   <div class="row" style="padding-left:0px">
     <ul>
       <li><a id="reset" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">REMOVE CHARTS</a></li>
+      <li><a id="cis" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">DNA-CIS</a></li>
+      <li><a id="housing" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">HOUSING</a></li>
       <li><a id="brca" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-BRCA</a></li>
       <li><a id="coad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-COAD</a></li>
       <li><a id="kirc" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-KIRC</a></li>
       <li><a id="luad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-LUAD</a></li>
       <li><a id="prad" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">RNA-PRAD</a></li>
-      <li><a id="cis" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">DNA-CIS</a></li>
-      <li><a id="housing" class="btn btn-flat" style="width:150px;display:inline;float:left" href="#">HOUSING</a></li>
+
     </ul>
 
   </div>
   <div id="cis_div">
     <h3>Cis-non encoding DNA</h3>
-    <p>In the classification task. We intentionally used the same neural network architecture, regularization methods, and lambda1 values to see if we could reproduce their results.  We also did the 0-1 normalization to determine if a different feature importance would be derived through our method.</p>
+    <p>In the classification task. We intentionally used the same neural network architecture, regularization methods, and lambda1 values to see if we could reproduce their results.  We also did the 0-1 normalization to determine if a different feature importance would be derived through our method. In their study, they acheived a ~84% accuracy, and through the normalization step, we could reach as high as ~95%. Furthermore, of the known 16 features that contribute to the target classes, our model predicted the top 16 features at a higher rate when we analyzed the top 20 wieghted features after training the model.</p>
     <svg id="cis_bar_chart" ></svg>
     <div>
       <div id="dataView" style='margin-left:100px;'></div>
@@ -285,6 +282,8 @@
     </div>
   </div>
   <div id="brca_div">
+    <h3>BRCA Cancer Predictions</h3>
+    <p>Overall, the RNA-seq cancer prediction had very high accuracy. Three of the five cancers were predicted with 100% accuracy. For BRCA tumor prediction, our model achieved 99% accuracy. The feature weight bar chart shows the top ~130 feature weights we obtained from the trained model. They are sorted alphabetically, by gene ID from the data set we used. </p>
     <svg id="brca_bar_chart"></svg>
     <div>
       <div id="dataView_brca" style='margin-left:100px;'></div>
@@ -292,6 +291,8 @@
     </div>
   </div>
   <div id='coad_div'>
+    <h3>COAD Cancer Predictions</h3>
+    <p>Overall, the RNA-seq cancer prediction had very high accuracy. Three of the five cancers were predicted with 100% accuracy. For COAD tumor prediction, our model achieved 100% accuracy. The feature weight bar chart shows the top ~130 feature weights we obtained from the trained model. They are sorted alphabetically, by gene ID from the data set we used. </p>
     <svg id="coad_bar_chart"></svg>
     <div>
       <div id="dataView_coad" style='margin-left:100px;'></div>
@@ -300,6 +301,8 @@
   </div>
 
   <div id='kirc_div'>
+    <h3>KIRC Cancer Predictions</h3>
+    <p>Overall, the RNA-seq cancer prediction had very high accuracy. Three of the five cancers were predicted with 100% accuracy. For KIRC tumor prediction, our model achieved 100% accuracy. The feature weight bar chart shows the top ~130 feature weights we obtained from the trained model. They are sorted alphabetically, by gene ID from the data set we used. </p>
     <svg id="kirc_bar_chart"></svg>
     <div>
       <div id="dataView_kirc" style='margin-left:100px;'></div>
@@ -307,6 +310,8 @@
     </div>
   </div>
   <div id='luad_div'>
+    <h3>LUAD Cancer Predictions</h3>
+    <p>Overall, the RNA-seq cancer prediction had very high accuracy. Three of the five cancers were predicted with 100% accuracy. For KIRC tumor prediction, our model achieved 99% accuracy. The feature weight bar chart shows the top ~130 feature weights we obtained from the trained model. They are sorted alphabetically, by gene ID from the data set we used. </p>
     <svg id="luad_bar_chart"></svg>
     <div>
       <div id="dataView_laud" style='margin-left:100px;'></div>
@@ -315,6 +320,8 @@
   </div>
 
   <div id='prad_div'>
+    <h3>PRAD Cancer Predictions</h3>
+    <p>Overall, the RNA-seq cancer prediction had very high accuracy. Three of the five cancers were predicted with 100% accuracy. For PRAD tumor prediction, our model achieved 100% accuracy. The feature weight bar chart shows the top ~130 feature weights we obtained from the trained model. They are sorted alphabetically, by gene ID from the data set we used. </p>
     <svg id="prad_bar_chart"></svg>
     <div>
       <div id="dataView_prad" style='margin-left:100px;'></div>
@@ -323,6 +330,8 @@
   </div>
 
   <div id="housing_div">
+    <h3>Housing Predictions</h3>
+    <p>Our intuition does indeed correlate with our results. The highest weighted features in our results are clearly the most important features contributing to the value of a home. The results show the top ~40 features extracted from our trained model. Applying this model to prediction, we see a strong correlation to the true value (y-axis). This experiment using less esoteric features indicates to us at an intuitive level that our normalization component is working correctly. </p>
     <svg id="housing_bar_chart" style="height:350"></svg>
     <div>
       <div id="housing_scat"></div>
@@ -363,7 +372,8 @@
     <p style="padding-left:50px;font-family:'courier new'">6.
     Ames Housing</p>
 
-    <p style="padding-left:50px;font-family:'courier new'">7. UCI</p>
+    <p style="padding-left:50px;font-family:'courier new'">7. Dua, D. and Karra Taniskidou, E. (2017). UCI Machine Learning Repository [http://archive.ics.uci.edu/ml]. <br>Irvine, CA:<br style="padding-left:50px;font-family:'courier new'">University of California, School of Information and Computer Science.</p>
+</p>
 
 
     </div>
